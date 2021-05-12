@@ -1,0 +1,18 @@
+name: smbmap
+tags:
+   - smb
+target: service
+service: netbios-ssn # From nmap
+   # or
+#   - target: port
+#   - port 445
+cmd: smbmap .... -u <wordlist1> -p <wordlist2>
+variable:
+   wordlist1: /usr/share/Seclist/t
+   wordlist2: /usr/share/Seclist/t
+regex:
+   - .* ... .*
+   - 2.*
+regexSuccess: "Anonymous connection allowed"
+# Function parserSmbMap called when command executed
+parserFunction: parsers.ParseSmbMap
