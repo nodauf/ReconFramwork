@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"math/rand"
 	"net"
 	"strings"
+	"time"
 
 	"github.com/RichardKnop/machinery/v1"
 	"github.com/RichardKnop/machinery/v1/config"
@@ -10,6 +12,10 @@ import (
 	"github.com/nodauf/ReconFramwork/tasks"
 )
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+
+}
 func GetMachineryServer() (*machinery.Server, error) {
 	log.INFO.Println("initing task server")
 
@@ -20,7 +26,6 @@ func GetMachineryServer() (*machinery.Server, error) {
 	if err == nil {
 
 		err = server.RegisterTasks(map[string]interface{}{
-			"a":      tasks.HelloWorld,
 			"runcmd": tasks.RunCmd,
 		})
 	}
@@ -28,13 +33,13 @@ func GetMachineryServer() (*machinery.Server, error) {
 
 }
 
-func StringInSlice(a string, list []string) bool {
-	for _, b := range list {
+func StringInSlice(a string, list []string) (int, bool) {
+	for i, b := range list {
 		if b == a {
-			return true
+			return i, true
 		}
 	}
-	return false
+	return -1, false
 }
 
 func IsNetwork(value string) bool {
@@ -86,4 +91,31 @@ func ParseList(list string) []string {
 		finalItems = append(finalItems, item)
 	}
 	return finalItems
+}
+
+// Credits https://stackoverflow.com/questions/22892120/how-to-generate-a-random-string-of-a-fixed-length-in-go
+func RandomString(n int) string {
+	letterIdxBits := 6
+	letterIdxMask := int64(1<<letterIdxBits - 1)
+	letterIdxMax := 63 / letterIdxBits
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	var src = rand.NewSource(time.Now().UnixNano())
+
+	sb := strings.Builder{}
+	sb.Grow(n)
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			sb.WriteByte(letterBytes[idx])
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
+	}
+
+	return sb.String()
+
 }

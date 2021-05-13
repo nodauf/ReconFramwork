@@ -4,12 +4,13 @@ import "gorm.io/gorm"
 
 type Port struct {
 	gorm.Model
-	Port    int    `gorm:"uniqueindex:idx_port"`
-	Service string `gorm:"uniqueindex:idx_port"`
-	Version string `gorm:"uniqueindex:idx_port"`
+	Port    int `gorm:"uniqueindex:idx_port"`
+	Service string
+	Version string
+	HostID  uint `gorm:"uniqueindex:idx_port"`
 	//Comment string `gorm:"primaryKey"`
-	Hosts       []Host        `gorm:"many2many:Hosts_Ports;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` //foreign_key:Port"`
-	PortComment []PortComment `gorm:"many2many:Port_PortComment"`
+	//Hosts       []Host        `gorm:"many2many:Hosts_Ports;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"` //foreign_key:Port"`
+	PortComment []PortComment `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"` //`gorm:"many2many:Port_PortComment"`
 }
 
 /*type PortDetail struct {
@@ -26,7 +27,8 @@ type Port struct {
 
 type PortComment struct {
 	gorm.Model
-	Tool    string
-	Comment string
-	//Host    Host //`gorm:"foreignKey:HostID"`
+	Tool    string `gorm:"uniqueindex:idx_portcomment"`
+	Comment string `gorm:"uniqueindex:idx_portcomment"`
+	PortID  uint   `gorm:"uniqueindex:idx_portcomment"` //`gorm:"type:bigint unsigned;"`
+	//Port    Port `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

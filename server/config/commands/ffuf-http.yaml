@@ -1,15 +1,14 @@
 name: ffuf
 tags:
    - http
-   - https
 target: service
-service: http # From nmap
+service: http, http-proxy # From nmap
    # or
 #   - target: port
 #   - port 445
-cmd: ffuf -u http://<target>/FUZZ -p <wordlist>
+cmd: ffuf -u http://<target>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
 variable:
-   wordlist: /usr/share/SecLists/Discovery/Web-Content/directory-list-2.3-medium.txt 
+   wordlist: /tmp/wordlist 
 #regex:
 #   - .* ... .*
 #   - 2.*

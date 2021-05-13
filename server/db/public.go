@@ -9,35 +9,33 @@ import (
 	"github.com/nodauf/ReconFramwork/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 )
 
 var db *gorm.DB
 
 func Init() {
 	dsn := "gorm:gorm@tcp(127.0.0.1:3306)/ReconFramwork?charset=utf8&parseTime=True&loc=Local"
-	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
+	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	//db.LogMode(true)
+	conn.Logger = conn.Logger.LogMode(logger.Info)
 	// Auto Migrate
 	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}) //, &database.HostsPorts{})
 	// Set table options
 	//db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&database.Host{})
-	conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
+	/*conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
 	conn.Debug().Migrator().CreateConstraint(&database.Port{}, "Hosts")
 	conn.Debug().Migrator().CreateConstraint(&database.Port{}, "PortComment")
 	conn.Debug().Migrator().CreateConstraint(&database.PortComment{}, "Host")
-	//conn.Debug().Migrator().CreateConstraint(&database.PortComment{}, "Port")
+	conn.Debug().Migrator().CreateConstraint(&database.PortComment{}, "Port")*/
 	db = conn
 }
 
 func GetHost(address string) database.Host {
 	var host database.Host
-	result := db.Where("address = ?", address).First(&host)
+	result := db.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return database.Host{}
 	}
@@ -45,19 +43,17 @@ func GetHost(address string) database.Host {
 }
 
 func AddOrUpdateHost(host database.Host) uint {
-	result := db.First(&host)
+	result := db.Where("address = ?", host.Address).First(&host)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		db.Create(&host)
+		db.Debug().Create(&host)
 		fmt.Println("Create")
 	} else {
 		fmt.Println("before update")
-		db.Clauses(clause.OnConflict{
-			UpdateAll: true,
-		}).Debug().Save(&host)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
 		fmt.Println("Update")
 		//fmt.Println(host)
 	}
@@ -70,10 +66,10 @@ func HostHasService(target, serviceString string) []string {
 	var host database.Host
 	services := utils.ParseList(serviceString)
 
-	db.Where("address = ?", target).First(&host)
+	db.Where("address = ?", target).Preload("Ports").First(&host)
 	for _, port := range host.Ports {
 
-		if utils.StringInSlice(port.Service, services) {
+		if _, ok := utils.StringInSlice(port.Service, services); ok {
 			targets = append(targets, target+":"+strconv.Itoa(port.Port))
 		}
 	}

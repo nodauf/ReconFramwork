@@ -4,17 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
-	"strings"
 )
 
-func HelloWorld(args string, args2 string) error {
-	fmt.Println("Hello world " + args + args2)
-	return nil
-}
-
 func RunCmd(cmd string) (string, string, error) {
-	cmdSplit := strings.Split(cmd, " ")
-	command := exec.Command(cmdSplit[0], cmdSplit[1:]...)
+	//cmdSplit := strings.Split(cmd, " ")
+	//command := exec.Command(cmdSplit[0], cmdSplit[1:]...)
+	command := exec.Command("bash", "-c", cmd)
 	//var stdout io.Writer
 	var stderr bytes.Buffer
 	var stdout bytes.Buffer

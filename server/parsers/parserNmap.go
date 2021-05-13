@@ -22,7 +22,6 @@ func (parse Parser) ParseNmap(stdout, stderr string) bool {
 	//fmt.Println(string(empJSON))
 
 	// Get the object host from the database if it exists
-
 	var host database.Host
 	if host = db.GetHost(nmap.Host.Address.Addr); host.Address != "" {
 		for _, port := range host.Ports {
@@ -31,27 +30,33 @@ func (parse Parser) ParseNmap(stdout, stderr string) bool {
 
 	} else {
 		host.Address = nmap.Host.Address.Addr
-		host.Hostname = nmap.Host.Hostnames.Hostname[0].Name
+		if len(nmap.Host.Hostnames.Hostname) > 0 {
+			host.Hostname = nmap.Host.Hostnames.Hostname[0].Name
+		}
 	}
 
 	var ports []database.Port
 	for _, portNmap := range nmap.Host.Ports.Port {
-		if utils.StringInSlice(portNmap.Portid, portList) {
-			break
-		}
+
 		var port database.Port
+		// If we retrieve the object from the database it may already have some ports
+		if index, ok := utils.StringInSlice(portNmap.Portid, portList); ok {
+			port = host.Ports[index]
+		} else {
+
+			port.Port, _ = strconv.Atoi(portNmap.Portid)
+			port.Service = portNmap.Service.Name
+			port.Version = portNmap.Service.Version
+		}
+
 		var portComment database.PortComment
-		port.Port, _ = strconv.Atoi(portNmap.Portid)
-		port.Service = portNmap.Service.Name
-		port.Version = portNmap.Service.Version
 		portComment.Comment = portNmap.Script.Output
 		portComment.Tool = tool
 		port.PortComment = append(port.PortComment, portComment)
 
 		ports = append(ports, port)
 	}
-	host.Ports = ports
-
+	host.Ports = append(host.Ports, ports...)
 	db.AddOrUpdateHost(host)
 
 	//fmt.Println("stdout: " + stdout)

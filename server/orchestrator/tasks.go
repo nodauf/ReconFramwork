@@ -31,6 +31,11 @@ func ExecuteCommands(server *machinery.Server, cmd, parser string) []reflect.Val
 	results, _ := res.Get(2 * time.Millisecond)
 
 	var t parsers.Parser
-	reflect.ValueOf(t).MethodByName(parser).Call(results)
+	if results != nil {
+		reflect.ValueOf(t).MethodByName(parser).Call(results)
+	} else {
+		log.ERROR.Println("Task got an error")
+	}
+
 	return results
 }
