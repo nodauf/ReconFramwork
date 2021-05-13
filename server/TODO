@@ -1,0 +1,2 @@
+- Trouver un moyen de pouvoir executer un template avec http et https. Utiliser httpx (apparement on peut pas l'appeller facilement en tant que lib) ? Faire plusieurs sections ?
+- Peut etre supprimer les regex, si on peut jouer avec le parser c'est peut etre inutile d'avoir des regexes

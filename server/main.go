@@ -19,7 +19,8 @@ func init() {
 func main() {
 	target := "127.0.0.1"
 	//task := "nmap quick scan"
-	task := "ffuf"
+	//task := "ffuf"
+	workflow := "discovery http"
 	db.Init()
 	/*var host database.Host
 	host.Address = "127.0.0.1"
@@ -46,7 +47,8 @@ func main() {
 	if err != nil {
 		log.ERROR.Fatalln(err)
 	}
-	orchestrator.RunTask(server, task, target)
+	//orchestrator.RunTask(server, task, target)
+	orchestrator.RunWorkflow(server, workflow, target)
 	//orchestrator.ExecuteCommands(server, task, target)
 
 }

@@ -1,0 +1,8 @@
+name: discovery http
+tags:
+  - discovery
+  - http
+
+commands:
+  - nmap quick scan
+  - ffuf http

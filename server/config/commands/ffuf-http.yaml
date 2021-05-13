@@ -1,4 +1,4 @@
-name: ffuf
+name: ffuf http
 tags:
    - http
 target: service
@@ -13,5 +13,4 @@ variable:
 #   - .* ... .*
 #   - 2.*
 #regexSuccess: "Anonymous connection allowed"
-# Function parserSmbMap called when command executed
 parserFunction: ParseFfuf

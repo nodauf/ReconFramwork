@@ -50,7 +50,7 @@ func (parse Parser) ParseNmap(stdout, stderr string) bool {
 		}
 
 		var portComment database.PortComment
-		portComment.Comment = portNmap.Script.Output
+		portComment.CommandOutput = portNmap.Script.Output
 		portComment.Tool = tool
 		port.PortComment = append(port.PortComment, portComment)
 

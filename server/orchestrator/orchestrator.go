@@ -42,10 +42,18 @@ func RunTask(server *machinery.Server, task, target string) {
 	} else {
 		fmt.Println(targetServiceDB)
 		fmt.Println(targetServiceConfig)
-		log.ERROR.Println("Impossible to execute the task")
+		log.ERROR.Println("Impossible to execute the task. The host is not found or the host has not the service targeted")
 	}
 }
 
-func RunWorkflow(workflow, target string) {
-
+func RunWorkflow(server *machinery.Server, workflowString, target string) {
+	workflow, ok := config.Config.Workflow[workflowString]
+	if ok {
+		fmt.Println(config.Config.Workflow)
+		for _, task := range workflow.Commands {
+			RunTask(server, task, target)
+		}
+	} else {
+		log.ERROR.Println("Workflow " + workflowString + " not found")
+	}
 }

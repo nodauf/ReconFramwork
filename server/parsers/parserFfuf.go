@@ -34,8 +34,8 @@ func (parse Parser) ParseFfuf(stdout, stderr string) bool {
 
 			if index, ok := utils.StringInSlice(port, portList); ok {
 				// Update the object from the database
-				comment, _ := json.Marshal(ffuf)
-				portComment := database.PortComment{Tool: "ffuf", Comment: string(comment)}
+				commandOutput, _ := json.Marshal(ffuf)
+				portComment := database.PortComment{Tool: "ffuf", CommandOutput: string(commandOutput)}
 				host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
 				db.AddOrUpdateHost(host)
 			} else {

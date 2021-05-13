@@ -26,7 +26,7 @@ func init() {
 }
 
 func LoadConfig() {
-	err := getTemplateFiles("./config/commands/")
+	err := getTemplateFiles("./config/")
 	if err != nil {
 		log.ERROR.Println(err)
 	}
