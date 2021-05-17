@@ -7,9 +7,13 @@ import (
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
-func preProcessingTemplate(template models.Command, target string) string {
+func preProcessingTemplate(template models.Command, target, service string) string {
 	var cmd string
-	cmd = strings.ReplaceAll(template.Cmd, "<target>", target)
+	if service != "" {
+		cmd = strings.ReplaceAll(template.Service[service], "<target>", target)
+	} else {
+		cmd = strings.ReplaceAll(template.Cmd, "<target>", target)
+	}
 	for variable, value := range template.Variable {
 		cmd = strings.ReplaceAll(cmd, "<"+variable+">", value)
 	}

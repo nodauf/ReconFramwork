@@ -76,7 +76,7 @@ func loadTemplateCommands(filePath string) error {
 	}
 	Config.Command[command.Name] = *command
 	//Config.Command = append(Config.Command, *command)
-	fmt.Printf("%#v \n", Config.Command)
+	//fmt.Printf("%#v \n", Config.Command)
 	return nil
 }
 

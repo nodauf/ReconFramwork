@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func RunCmd(cmd string) (string, string, error) {
+func RunCmd(taskName, cmd string) (string, string, string, string, error) {
 	//cmdSplit := strings.Split(cmd, " ")
 	//command := exec.Command(cmdSplit[0], cmdSplit[1:]...)
 	command := exec.Command("bash", "-c", cmd)
@@ -25,6 +25,6 @@ func RunCmd(cmd string) (string, string, error) {
 	//var t parsers.Parser
 	//reflect.ValueOf(t).MethodByName("ParseNmap").Call(nil)
 	//test.Parse(string(out))
-	return stdout.String(), stderr.String(), err
+	return taskName, cmd, stdout.String(), stderr.String(), err
 	//return "", "", err
 }

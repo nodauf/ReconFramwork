@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"encoding/xml"
+	"fmt"
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/db"
@@ -10,8 +11,8 @@ import (
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
-func (parse Parser) ParseNmap(stdout, stderr string) bool {
-	tool := "nmap"
+func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
+	fmt.Println("parse nmap")
 	var nmap modelsParsers.Nmaprun
 	var portList []string
 	// we unmarshal our byteArray which contains our
@@ -51,7 +52,7 @@ func (parse Parser) ParseNmap(stdout, stderr string) bool {
 
 		var portComment database.PortComment
 		portComment.CommandOutput = portNmap.Script.Output
-		portComment.Tool = tool
+		portComment.Task = taskName
 		port.PortComment = append(port.PortComment, portComment)
 
 		ports = append(ports, port)

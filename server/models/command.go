@@ -4,7 +4,7 @@ type Command struct {
 	Name           string            `yaml:"name"`
 	Tags           []string          `yaml:"tags,omitempty"`
 	Target         string            `yaml:"target"`
-	Service        string            `yaml:"service,omitempty"`
+	Service        map[string]string `yaml:"service,omitempty"`
 	Port           string            `yaml:"port,omitempty"`
 	Cmd            string            `yaml:"cmd"`
 	Variable       map[string]string `yaml:"variable,omitempty"`

@@ -1,0 +1,20 @@
+name: ffuf http
+tags:
+   - http
+target: service
+#service: http, http-proxy # From nmap
+service:
+   http : ffuf -u http://<target>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+   http-alt : ffuf -u http://<target>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+   http-proxy : ffuf -u http://<target>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+   https : ffuf -u https://<target>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+   # or
+#   - target: port
+#   - port: 445
+variable:
+   wordlist: /tmp/wordlist 
+#regex:
+#   - .* ... .*
+#   - 2.*
+#regexSuccess: "Anonymous connection allowed"
+parserFunction: ParseFfuf

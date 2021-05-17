@@ -3,20 +3,44 @@ package orchestrator
 import (
 	"fmt"
 	"reflect"
+	"sync"
 	"time"
 
 	"github.com/RichardKnop/machinery/v1"
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/RichardKnop/machinery/v1/tasks"
+	"github.com/nodauf/ReconFramwork/server/db"
 	"github.com/nodauf/ReconFramwork/server/parsers"
 )
 
-func ExecuteCommands(server *machinery.Server, cmd, parser string) []reflect.Value {
+func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
+	defer wg.Done()
+	jobs := db.GetNonProcessedTasks()
 
-	fmt.Println(cmd)
+	var t parsers.Parser
+	for _, job := range jobs {
+		results, _ := server.GetBackend().GetState(job.TaskUUID)
+		if results.IsSuccess() {
+			reflectResults, _ := tasks.ReflectTaskResults(results.Results)
+			reflect.ValueOf(t).MethodByName(job.Parser).Call(reflectResults)
+			log.INFO.Println("Done")
+
+			db.RemoveJob(&job)
+		} else {
+			log.INFO.Println("Not success")
+		}
+	}
+}
+
+func executeCommands(server *machinery.Server, host, cmd, parser, taskName string) {
+	//fmt.Println(cmd)
 	task0 := tasks.Signature{
 		Name: "runcmd",
 		Args: []tasks.Arg{
+			{
+				Type:  "string",
+				Value: taskName,
+			},
 			{
 				Type:  "string",
 				Value: cmd,
@@ -27,15 +51,17 @@ func ExecuteCommands(server *machinery.Server, cmd, parser string) []reflect.Val
 	if err != nil {
 		log.ERROR.Fatalln(err.Error())
 	}
-
+	job := db.AddJob(host, parser, res.GetState().TaskUUID)
+	fmt.Println("job added ")
 	results, _ := res.Get(2 * time.Millisecond)
 
 	var t parsers.Parser
+	//fmt.Println(res.Signature)
 	if results != nil {
 		reflect.ValueOf(t).MethodByName(parser).Call(results)
 	} else {
 		log.ERROR.Println("Task got an error")
 	}
+	db.RemoveJob(&job)
 
-	return results
 }

@@ -2,11 +2,9 @@ package db
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/models/database"
-	"github.com/nodauf/ReconFramwork/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -20,9 +18,10 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-	conn.Logger = conn.Logger.LogMode(logger.Info)
+	//conn.Logger = conn.Logger.LogMode(logger.Info)
+	conn.Logger = conn.Logger.LogMode(logger.Silent)
 	// Auto Migrate
-	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}) //, &database.HostsPorts{})
+	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}, &database.Job{}) //, &database.HostsPorts{})
 	// Set table options
 	//db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&database.Host{})
 	/*conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
@@ -49,28 +48,25 @@ func AddOrUpdateHost(host database.Host) uint {
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		db.Debug().Create(&host)
-		fmt.Println("Create")
+		//db.Debug().Create(&host)
+		db.Create(&host)
 	} else {
-		fmt.Println("before update")
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
-		fmt.Println("Update")
+		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
 		//fmt.Println(host)
 	}
 	//fmt.Println(host.ID)
 	return host.ID
 }
 
-func HostHasService(target, serviceString string) []string {
-	var targets []string
+func HostHasService(target string, serviceCommand map[string]string) map[string]string {
+	var targets = make(map[string]string)
 	var host database.Host
-	services := utils.ParseList(serviceString)
-
 	db.Where("address = ?", target).Preload("Ports").First(&host)
 	for _, port := range host.Ports {
 
-		if _, ok := utils.StringInSlice(port.Service, services); ok {
-			targets = append(targets, target+":"+strconv.Itoa(port.Port))
+		if _, ok := serviceCommand[port.Service]; ok {
+			targets[port.Service] = target + ":" + strconv.Itoa(port.Port)
 		}
 	}
 	return targets
@@ -99,4 +95,27 @@ func DeleteHost(host database.Host) bool {
 	}
 	return false
 
+}
+
+func AddJob(address, parser, taskUUID string) database.Job {
+	host := GetHost(address)
+	var job database.Job
+	if host.Address != "" {
+		job.Host = host
+	}
+	job.TaskUUID = taskUUID
+	job.Processed = false
+	job.Parser = parser
+	db.Debug().Create(&job)
+	return job
+}
+
+func RemoveJob(job *database.Job) {
+	db.Model(&database.Job{}).Where("id = ?", job.ID).Update("processed", true)
+}
+
+func GetNonProcessedTasks() []database.Job {
+	var jobs []database.Job
+	db.Where("processed = ?", false).Find(&jobs)
+	return jobs
 }

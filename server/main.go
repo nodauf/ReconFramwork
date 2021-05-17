@@ -1,6 +1,8 @@
 package main
 
 import (
+	"sync"
+
 	machinery "github.com/RichardKnop/machinery/v1"
 	"github.com/RichardKnop/machinery/v1/log"
 
@@ -17,10 +19,11 @@ func init() {
 }
 
 func main() {
-	target := "127.0.0.1"
-	//task := "nmap quick scan"
-	//task := "ffuf"
-	workflow := "discovery http"
+	var wg sync.WaitGroup
+	//target := "127.0.0.1/24"
+	//task := "nikto"
+	//task := "ffuf http"
+	//workflow := "discovery http"
 	db.Init()
 	/*var host database.Host
 	host.Address = "127.0.0.1"
@@ -47,8 +50,12 @@ func main() {
 	if err != nil {
 		log.ERROR.Fatalln(err)
 	}
-	//orchestrator.RunTask(server, task, target)
-	orchestrator.RunWorkflow(server, workflow, target)
+	wg.Add(1)
+	//go orchestrator.RunTask(wg, server, task, target)
+	go orchestrator.ConsumeEndedTasks(server, &wg)
+	//go orchestrator.RunWorkflow(&wg, server, workflow, target)
+
+	wg.Wait()
 	//orchestrator.ExecuteCommands(server, task, target)
 
 }

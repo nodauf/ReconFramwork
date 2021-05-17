@@ -27,9 +27,9 @@ type Port struct {
 
 type PortComment struct {
 	gorm.Model
-	Tool          string `gorm:"uniqueindex:idx_portcomment"`
-	CommandOutput string `gorm:"uniqueindex:idx_portcomment"`
-	PortID        uint   `gorm:"uniqueindex:idx_portcomment;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` //`gorm:"type:bigint unsigned;"`
+	Task          string `gorm:"uniqueindex:idx_portcomment"`
+	CommandOutput string
+	PortID        uint `gorm:"uniqueindex:idx_portcomment;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` //`gorm:"type:bigint unsigned;"`
 	Comment       string
 	//Port    Port `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

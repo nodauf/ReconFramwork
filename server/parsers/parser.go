@@ -4,4 +4,5 @@ package parsers
 //Parse(string) bool
 //}
 
-type Parser string
+type Parser struct {
+}

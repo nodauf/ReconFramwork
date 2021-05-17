@@ -2,7 +2,8 @@ name: smbmap
 tags:
    - smb
 target: service
-service: netbios-ssn # From nmap
+service: 
+   netbios-ssn: smbmap .... -u <wordlist1> -p <wordlist2>
    # or
 #   - target: port
 #   - port 445
