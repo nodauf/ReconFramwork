@@ -5,10 +5,10 @@ target: service
 #service: http, http-proxy # From nmap
 service:
 # Nikto will almost always exit with code error 1 https://github.com/sullo/nikto/pull/658
-   http : nikto -host http://<target> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   http-alt : nikto -host http://<target> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   http-proxy : nikto -host http://<target> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   https : nikto -hosts https://<target> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
+   http : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
+   http-alt : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
+   http-proxy : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
+   https : nikto -hosts https://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
    # or
 #   - target: port
 #   - port: 445
