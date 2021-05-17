@@ -41,6 +41,15 @@ func GetHost(address string) database.Host {
 	return host
 }
 
+func GetHostWherePort(address, port string) database.Host {
+	var host database.Host
+	result := db.Joins("JOIN ports ON ports.host_id = hosts.id ").Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return database.Host{}
+	}
+	return host
+}
+
 func AddOrUpdateHost(host database.Host) uint {
 	result := db.Where("address = ?", host.Address).First(&host)
 	//fmt.Println(result.RowsAffected) // returns found records count
