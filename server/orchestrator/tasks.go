@@ -21,6 +21,7 @@ func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
 	for _, job := range jobs {
 		results, _ := server.GetBackend().GetState(job.TaskUUID)
 		if results.IsSuccess() {
+			t.Job = job
 			reflectResults, _ := tasks.ReflectTaskResults(results.Results)
 			reflect.ValueOf(t).MethodByName(job.Parser).Call(reflectResults)
 			log.INFO.Println("Done")
@@ -52,10 +53,11 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName strin
 		log.ERROR.Fatalln(err.Error())
 	}
 	job := db.AddJob(host, parser, res.GetState().TaskUUID)
+	fmt.Println(job.Host)
 	fmt.Println("job added ")
 	results, _ := res.Get(2 * time.Millisecond)
-
 	var t parsers.Parser
+	t.Job = job
 	//fmt.Println(res.Signature)
 	if results != nil {
 		reflect.ValueOf(t).MethodByName(parser).Call(results)

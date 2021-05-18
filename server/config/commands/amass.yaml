@@ -1,0 +1,9 @@
+name: amass
+tags: 
+   - discovery
+   - subdomain
+   - scan
+target: domain
+cmd: amass enum -active -nolocaldb -ip -d <target> -json /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+# Function parserNmap called when command executed
+parserFunction: ParseAmass

@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/models"
@@ -22,7 +23,7 @@ func Init() {
 	//conn.Logger = conn.Logger.LogMode(logger.Info)
 	conn.Logger = conn.Logger.LogMode(logger.Silent)
 	// Auto Migrate
-	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}, &database.Job{}) //, &database.HostsPorts{})
+	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}, &database.Job{}, &database.Domain{}) //, &database.HostsPorts{})
 	// Set table options
 	//db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&database.Host{})
 	/*conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
@@ -35,7 +36,7 @@ func Init() {
 
 func GetHost(address string) database.Host {
 	var host database.Host
-	result := db.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
+	result := db.Where("address = ? or hostname = ?", address, address).Preload("Ports").Preload("Ports.PortComment").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return database.Host{}
 	}
@@ -52,15 +53,17 @@ func GetHostWherePort(address, port string) database.Host {
 }
 
 func AddOrUpdateHost(host database.Host) uint {
-	result := db.Where("address = ?", host.Address).First(&host)
+	result := db.Where("address = ? or hostname = ?", host.Address, host.Hostname).Debug().First(&host)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		//db.Debug().Create(&host)
-		db.Create(&host)
+		fmt.Println("create")
+		db.Debug().Create(&host)
 	} else {
+		fmt.Println("update")
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
 		//fmt.Println(host)
@@ -110,14 +113,33 @@ func DeleteHost(host database.Host) bool {
 func AddJob(address, parser, taskUUID string) database.Job {
 	host := GetHost(address)
 	var job database.Job
-	if host.Address != "" {
+	if host.ID != 0 {
 		job.Host = host
 	}
 	job.TaskUUID = taskUUID
 	job.Processed = false
 	job.Parser = parser
 	db.Debug().Create(&job)
+	db.Preload("Host").Debug().First(&job)
 	return job
+}
+
+func AddDomain(domain database.Domain) {
+	result := db.Where("domain = ? ", domain.Domain).Debug().First(&domain)
+	//fmt.Println(result.RowsAffected) // returns found records count
+	//fmt.Println(result.Error)        // returns error
+
+	// check error ErrRecordNotFound
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		//db.Debug().Create(&host)
+		fmt.Println("create domain")
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Create(&domain)
+	} /*else {
+		fmt.Println("update")
+		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
+		//fmt.Println(host)
+	}*/
 }
 
 func RemoveJob(job *database.Job) {
@@ -126,6 +148,6 @@ func RemoveJob(job *database.Job) {
 
 func GetNonProcessedTasks() []database.Job {
 	var jobs []database.Job
-	db.Where("processed = ?", false).Find(&jobs)
+	db.Where("processed = ?", false).Preload("Host").Find(&jobs)
 	return jobs
 }

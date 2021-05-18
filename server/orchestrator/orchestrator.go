@@ -7,6 +7,7 @@ import (
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/config"
 	"github.com/nodauf/ReconFramwork/server/db"
+	"github.com/nodauf/ReconFramwork/server/models/database"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
@@ -28,21 +29,41 @@ func RunTask(wg *sync.WaitGroup, server *machinery.Server, task, target string) 
 			RunTask(wg, server, task, host)
 		}
 
-		// If the target is the all host no need to specified port or service
-	} else if _, ok := utils.StringInSlice("host", targetType); ok {
-		//cmd := strings.ReplaceAll(config.Config.Command[task].Cmd, "<target>", target)
-		parser := config.Config.Command[task].ParserFunction
-		cmd := preProcessingTemplate(config.Config.Command[task], target, "")
-		executeCommands(server, target, cmd, parser, task)
-		// If the target is a service and the host has the service in the database from a previous scan
-	} else if targetServiceDB := db.HostHasService(target, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
-		parser := config.Config.Command[task].ParserFunction
-		for service, targetAndPort := range targetServiceDB {
-			cmd := preProcessingTemplate(config.Config.Command[task], targetAndPort, service)
-			executeCommands(server, target, cmd, parser, task)
-		}
 	} else {
-		log.ERROR.Println("Impossible to execute the task. The host is not found or the host has not the service targeted")
+		host := db.GetHost(target)
+		if host.Address == "" {
+			var host database.Host
+			if utils.IsIP(target) {
+				host.Address = target
+			} else {
+				host.Hostname = target
+			}
+			db.AddOrUpdateHost(host)
+		}
+		// If the target is the all host no need to specified port or service
+		if _, ok := utils.StringInSlice("host", targetType); ok {
+			//cmd := strings.ReplaceAll(config.Config.Command[task].Cmd, "<target>", target)
+			parser := config.Config.Command[task].ParserFunction
+			cmd := preProcessingTemplate(config.Config.Command[task], target, "")
+			executeCommands(server, target, cmd, parser, task)
+			// If the target is a service and the host has the service in the database from a previous scan
+		} else if targetServiceDB := db.HostHasService(target, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
+			parser := config.Config.Command[task].ParserFunction
+			for service, targetAndPort := range targetServiceDB {
+				cmd := preProcessingTemplate(config.Config.Command[task], targetAndPort, service)
+				executeCommands(server, target, cmd, parser, task)
+			}
+			// If the template target the domain, for exemple subdomain enumeration
+		} else if _, ok := utils.StringInSlice("domain", targetType); ok {
+			parser := config.Config.Command[task].ParserFunction
+			cmd := preProcessingTemplate(config.Config.Command[task], target, "")
+			executeCommands(server, target, cmd, parser, task)
+		} else {
+			log.DEBUG.Println(task)
+			log.DEBUG.Println(config.Config.Command)
+			log.DEBUG.Println(targetServiceDB)
+			log.ERROR.Println("Impossible to execute the task. The host is not found or the host has not the service targeted")
+		}
 	}
 }
 

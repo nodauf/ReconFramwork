@@ -52,6 +52,15 @@ func IsNetwork(value string) bool {
 	return false
 }
 
+func IsIP(value string) bool {
+	ip := net.ParseIP(value)
+
+	if ip == nil {
+		return false
+	}
+	return true
+}
+
 func HostsFromNetwork(cidr string) ([]string, error) {
 	ip, ipnet, err := net.ParseCIDR(cidr)
 	if err != nil {
