@@ -1,16 +1,25 @@
-name: ffuf http
+name: ffuf
 tags:
    - http
 target: service
 #service: http, http-proxy # From nmap
 service:
-   http : ffuf -u http://<target>:<port>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
-   http-alt : ffuf -u http://<target>:<port>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
-   http-proxy : ffuf -u http://<target>:<port>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
-   https : ffuf -u https://<target>:<port>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
+   http: 
+      variable:
+         protocol: http
+   http-alt: 
+        variable:
+         protocol: http
+   http-proxy: 
+      variable:
+         protocol: http
+   https: 
+      variable:
+         protocol: https
    # or
 #   - target: port
 #   - port: 445
+cmd: ffuf -u <protocol>://<target>:<port>/FUZZ -w <wordlist> -o /tmp/<randstring> 1>&2 && cat /tmp/<randstring>
 variable:
    wordlist: /tmp/wordlist 
 #regex:

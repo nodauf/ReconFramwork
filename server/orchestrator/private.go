@@ -13,8 +13,11 @@ func preProcessingTemplate(template models.Command, target, service string) stri
 		targetAndPort := target
 		target = strings.Split(targetAndPort, ":")[0]
 		port := strings.Split(targetAndPort, ":")[1]
-		cmd = strings.ReplaceAll(template.Service[service], "<target>", target)
+		cmd = strings.ReplaceAll(template.Cmd, "<target>", target)
 		cmd = strings.ReplaceAll(cmd, "<port>", port)
+		for variable, value := range template.Service[service].Variable {
+			cmd = strings.ReplaceAll(cmd, "<"+variable+">", value)
+		}
 	} else {
 		cmd = strings.ReplaceAll(template.Cmd, "<target>", target)
 	}

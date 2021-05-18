@@ -4,14 +4,24 @@ tags:
 target: service
 #service: http, http-proxy # From nmap
 service:
-# Nikto will almost always exit with code error 1 https://github.com/sullo/nikto/pull/658
-   http : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   http-alt : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   http-proxy : nikto -host http://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
-   https : nikto -hosts https://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
+   http: 
+      variable:
+         protocol: http
+   http-alt: 
+        variable:
+         protocol: http
+   http-proxy: 
+      variable:
+         protocol: http
+   https: 
+      variable:
+         protocol: https
    # or
 #   - target: port
 #   - port: 445
+
+# Nikto will almost always exit with code error 1 https://github.com/sullo/nikto/pull/658
+cmd: nikto -host <protocol>://<target>:<port> -ask no -o /tmp/<randstring>.json 1>&2 ; cat /tmp/<randstring>.json
 #regex:
 #   - .* ... .*
 #   - 2.*

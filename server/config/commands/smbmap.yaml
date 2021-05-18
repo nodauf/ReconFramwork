@@ -3,9 +3,10 @@ tags:
    - smb
 target: service
 service: 
-   netbios-ssn: smbmap -H <target> --no-update
+   netbios-ssn:
    # or
 #   - target: port
 #   - port 445
+cmd: smbmap -H <target> --no-update
 # Function parserSmbMap called when command executed
 parserFunction: ParseSmbmap

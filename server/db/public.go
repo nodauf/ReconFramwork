@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/nodauf/ReconFramwork/server/models"
 	"github.com/nodauf/ReconFramwork/server/models/database"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -68,7 +69,7 @@ func AddOrUpdateHost(host database.Host) uint {
 	return host.ID
 }
 
-func HostHasService(target string, serviceCommand map[string]string) map[string]string {
+func HostHasService(target string, serviceCommand map[string]models.CommandService) map[string]string {
 	var targets = make(map[string]string)
 	var host database.Host
 	db.Where("address = ?", target).Preload("Ports").First(&host)
