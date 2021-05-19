@@ -4,5 +4,8 @@ tags:
   - http
 
 commands:
-  - nmap quick scan
- # - nikto
+  - ffuf
+  - nikto
+
+options:
+  ParallelizeTasks: true

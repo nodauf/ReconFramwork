@@ -88,8 +88,13 @@ func RunWorkflow(wg *sync.WaitGroup, server *machinery.Server, workflowString, t
 		if ok {
 			//fmt.Println(config.Config.Workflow)
 			for _, task := range workflow.Commands {
+				// wg.Done is done at the end of each tasks
 				wg.Add(1)
+				if workflow.Options.ParallelizeTasks {
+					go RunTask(wg, server, task, target)
+				} else {
 				RunTask(wg, server, task, target)
+			}
 			}
 		} else {
 			log.ERROR.Println("Workflow " + workflowString + " not found")
