@@ -32,7 +32,9 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 	} else {
 		host.Address = nmap.Host.Address.Addr
 		if len(nmap.Host.Hostnames.Hostname) > 0 {
-			host.Hostname = nmap.Host.Hostnames.Hostname[0].Name
+			var domain database.Domain
+			domain.Domain = nmap.Host.Hostnames.Hostname[0].Name
+			host.Domain = append(host.Domain, domain)
 		}
 	}
 
@@ -58,7 +60,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 		ports = append(ports, port)
 	}
 	host.Ports = append(host.Ports, ports...)
-	db.AddOrUpdateHost(host)
+	db.AddOrUpdateHost(&host)
 
 	//fmt.Println("stdout: " + stdout)
 	//fmt.Println("stderr: " + stderr)

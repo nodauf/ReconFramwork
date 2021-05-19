@@ -52,7 +52,11 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName strin
 	if err != nil {
 		log.ERROR.Fatalln(err.Error())
 	}
-	job := db.AddJob(host, parser, res.GetState().TaskUUID)
+	job, err := db.AddJob(host, parser, res.GetState().TaskUUID)
+	if err != nil {
+		log.ERROR.Println(err)
+		return
+	}
 	fmt.Println(job.Host)
 	fmt.Println("job added ")
 	results, _ := res.Get(2 * time.Millisecond)

@@ -34,7 +34,7 @@ func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
 				commandOutput, _ := json.Marshal(ffuf)
 				portComment := database.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
 				host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
-				db.AddOrUpdateHost(host)
+				db.AddOrUpdateHost(&host)
 			} else {
 				log.ERROR.Println("Something went wrong. Port " + port + " not found for the Host " + target + " in the database.")
 			}

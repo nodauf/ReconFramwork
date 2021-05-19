@@ -31,7 +31,7 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 			commandOutput, _ := json.Marshal(nuclei)
 			portComment := database.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
 			host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
-			db.AddOrUpdateHost(host)
+			db.AddOrUpdateHost(&host)
 
 		} else {
 			log.ERROR.Println("Something went wrong. Host " + target + " not found in the database")

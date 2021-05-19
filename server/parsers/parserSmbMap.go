@@ -29,7 +29,7 @@ func (parse Parser) ParseSmbmap(taskName, cmdline, stdout, stderr string) bool {
 		}
 		portComment := database.PortComment{Task: taskName, CommandOutput: string(stdout), Comment: comment}
 		host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
-		db.AddOrUpdateHost(host)
+		db.AddOrUpdateHost(&host)
 
 	} else {
 		log.ERROR.Println("Something went wrong. Host " + target + " not found in the database or the port was not open for this host")

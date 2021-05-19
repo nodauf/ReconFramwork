@@ -3,9 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
-	"github.com/nodauf/ReconFramwork/server/models"
 	"github.com/nodauf/ReconFramwork/server/models/database"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -43,6 +41,15 @@ func GetHost(address string) database.Host {
 	return host
 }
 
+func GetDomain(domainStr string) database.Domain {
+	var domain database.Domain
+	result := db.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").First(&domain)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return database.Domain{}
+	}
+	return domain
+}
+
 func GetHostWherePort(address, port string) database.Host {
 	var host database.Host
 	result := db.Joins("JOIN ports ON ports.host_id = hosts.id ").Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
@@ -52,13 +59,14 @@ func GetHostWherePort(address, port string) database.Host {
 	return host
 }
 
-func AddOrUpdateHost(host database.Host) uint {
-	result := db.Where("address = ? or hostname = ?", host.Address, host.Hostname).Debug().First(&host)
+func AddOrUpdateHost(host *database.Host) uint {
+	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("address = ? ", host.Address).Debug().FirstOrCreate(host)
+
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+	/*if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		//db.Debug().Create(&host)
 		fmt.Println("create")
 		db.Debug().Create(&host)
@@ -68,11 +76,32 @@ func AddOrUpdateHost(host database.Host) uint {
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
 		//fmt.Println(host)
 	}
-	//fmt.Println(host.ID)
+	//fmt.Println(host.ID)*/
 	return host.ID
 }
 
-func HostHasService(target string, serviceCommand map[string]models.CommandService) map[string]string {
+func AddOrUpdateDomain(domain *database.Domain) uint {
+	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("domain = ? ", domain.Domain).Debug().FirstOrCreate(domain)
+
+	//fmt.Println(result.RowsAffected) // returns found records count
+	//fmt.Println(result.Error)        // returns error
+
+	// check error ErrRecordNotFound
+	/*if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		//db.Debug().Create(&host)
+		fmt.Println("create")
+		db.Debug().Create(&host)
+	} else {
+		fmt.Println("update")
+		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
+		//fmt.Println(host)
+	}
+	//fmt.Println(host.ID)*/
+	return domain.ID
+}
+
+/*func HostHasService(target string, serviceCommand map[string]models.CommandService) map[string]string {
 	var targets = make(map[string]string)
 	var host database.Host
 	db.Where("address = ?", target).Preload("Ports").First(&host)
@@ -83,7 +112,7 @@ func HostHasService(target string, serviceCommand map[string]models.CommandServi
 		}
 	}
 	return targets
-}
+}*/
 
 /*func UpdateHost(host database.Host) bool {
 	result := db.First(&host)
@@ -110,18 +139,30 @@ func DeleteHost(host database.Host) bool {
 
 }
 
-func AddJob(address, parser, taskUUID string) database.Job {
-	host := GetHost(address)
+func AddJob(target, parser, taskUUID string) (database.Job, error) {
+	var err error
+	host := GetHost(target)
+	domain := GetDomain(target)
 	var job database.Job
 	if host.ID != 0 {
 		job.Host = host
+		job.TaskUUID = taskUUID
+		job.Processed = false
+		job.Parser = parser
+		db.Debug().Create(&job)
+		db.Preload("Host").Debug().First(&job)
+	} else if domain.ID != 0 {
+		job.Domain = domain
+		job.TaskUUID = taskUUID
+		job.Processed = false
+		job.Parser = parser
+		db.Debug().Create(&job)
+		db.Preload("Host").Debug().First(&job)
+
+	} else {
+		err = errors.New("Cannot attach the job to an host or domain")
 	}
-	job.TaskUUID = taskUUID
-	job.Processed = false
-	job.Parser = parser
-	db.Debug().Create(&job)
-	db.Preload("Host").Debug().First(&job)
-	return job
+	return job, err
 }
 
 func AddDomain(domain database.Domain) {

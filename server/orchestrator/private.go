@@ -28,3 +28,7 @@ func preProcessingTemplate(template models.Command, target, service string) stri
 	cmd = strings.ReplaceAll(cmd, "<randstring>", randString)
 	return cmd
 }
+
+func hasService(target models.Target, serviceCommand map[string]models.CommandService) map[string]string {
+	return target.HasService(serviceCommand)
+}

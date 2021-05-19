@@ -39,7 +39,7 @@ func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
 			}
 
 		} else {
-			log.ERROR.Println("Something went wrong. Host " + host.Hostname + " not found in the database")
+			log.ERROR.Println("Something went wrong. Host " + host.Address + " not found in the database")
 		}
 	} else {
 		log.INFO.Println("Nothing found by nuclei")
