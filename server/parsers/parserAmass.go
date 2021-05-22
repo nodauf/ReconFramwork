@@ -2,7 +2,6 @@ package parsers
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
@@ -21,11 +20,12 @@ func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
 			amass.Domains = append(amass.Domains, amassDomain)
 		}
 	}
-	fmt.Println(parse.Job)
+
 	if len(amass.Domains) > 0 {
 		var host modelsDatabases.Host
 		host = parse.Job.Host
 		if host.ID != 0 {
+			// If the job is attached to a host
 			for _, domain := range amass.Domains {
 				var domainDB modelsDatabases.Domain
 
@@ -35,6 +35,21 @@ func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
 					host.Address = address.IP
 					domainDB.Host = append(domainDB.Host, host)
 				}
+				db.AddDomain(domainDB)
+			}
+		} else if parse.Job.Domain.ID != 0 {
+			// If the job is attached to a domain
+			for _, domain := range amass.Domains {
+				var domainDB modelsDatabases.Domain
+
+				domainDB.Domain = domain.Name
+				for _, address := range domain.Addresses {
+					var host modelsDatabases.Host
+					host.Address = address.IP
+					domainDB.Host = append(domainDB.Host, host)
+				}
+				domainDB.SubdomainOf = &parse.Job.Domain
+
 				db.AddDomain(domainDB)
 			}
 
