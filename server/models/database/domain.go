@@ -25,3 +25,11 @@ func (domain *Domain) HasService(serviceCommand map[string]models.CommandService
 	}
 	return targets
 }
+
+func (domain *Domain) HasSubdomain() bool {
+	return len(domain.Subdomain) > 0
+}
+
+func (domain *Domain) GetTarget() string {
+	return domain.Domain
+}

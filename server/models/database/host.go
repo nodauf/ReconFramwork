@@ -26,3 +26,12 @@ func (host *Host) HasService(serviceCommand map[string]models.CommandService) ma
 	}
 	return targets
 }
+
+func (host *Host) HasSubdomain() bool {
+	// A host can't have a subdomain
+	return false
+}
+
+func (host *Host) GetTarget() string {
+	return host.Address
+}
