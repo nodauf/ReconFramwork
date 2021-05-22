@@ -2,9 +2,10 @@ package db
 
 import (
 	"errors"
-	"fmt"
 
+	"github.com/nodauf/ReconFramwork/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
+	"github.com/nodauf/ReconFramwork/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -43,7 +44,7 @@ func GetHost(address string) modelsDatabases.Host {
 
 func GetDomain(domainStr string) modelsDatabases.Domain {
 	var domain modelsDatabases.Domain
-	result := db.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").First(&domain)
+	result := db.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").Preload("Subdomain").First(&domain)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Domain{}
 	}
@@ -60,44 +61,37 @@ func GetHostWherePort(address, port string) modelsDatabases.Host {
 }
 
 func AddOrUpdateHost(host *modelsDatabases.Host) uint {
-	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("address = ? ", host.Address).Debug().FirstOrCreate(host)
-
+	result := db.Where("address = ? ", host.Address).First(host)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
-	// check error ErrRecordNotFound
-	/*if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		//db.Debug().Create(&host)
-		fmt.Println("create")
+	// check error ErrRecordNotFound. If the record does not exist we create it. Otherwise we update it
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		db.Debug().Create(&host)
 	} else {
-		fmt.Println("update")
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
 		//fmt.Println(host)
 	}
-	//fmt.Println(host.ID)*/
+	//fmt.Println(host.ID)
 	return host.ID
 }
 
 func AddOrUpdateDomain(domain *modelsDatabases.Domain) uint {
-	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("domain = ? ", domain.Domain).Debug().FirstOrCreate(domain)
+	result := db.Where("domain = ? ", domain.Domain).First(domain)
 
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
-	/*if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		//db.Debug().Create(&host)
-		fmt.Println("create")
-		db.Debug().Create(&host)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		db.Create(&domain)
 	} else {
-		fmt.Println("update")
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&domain)
 		//fmt.Println(host)
 	}
-	//fmt.Println(host.ID)*/
+	//fmt.Println(host.ID)
 	return domain.ID
 }
 
@@ -149,15 +143,15 @@ func AddJob(target, parser, taskUUID string) (modelsDatabases.Job, error) {
 		job.TaskUUID = taskUUID
 		job.Processed = false
 		job.Parser = parser
-		db.Debug().Create(&job)
-		db.Preload("Host").Debug().First(&job)
+		db.Create(&job)
+		db.Preload("Host").First(&job)
 	} else if domain.ID != 0 {
 		job.Domain = domain
 		job.TaskUUID = taskUUID
 		job.Processed = false
 		job.Parser = parser
-		db.Debug().Create(&job)
-		db.Preload("Host").Debug().First(&job)
+		db.Create(&job)
+		db.Preload("Domain").First(&job)
 
 	} else {
 		err = errors.New("Cannot attach the job to an host or domain")
@@ -166,15 +160,14 @@ func AddJob(target, parser, taskUUID string) (modelsDatabases.Job, error) {
 }
 
 func AddDomain(domain modelsDatabases.Domain) {
-	result := db.Where("domain = ? ", domain.Domain).Debug().First(&domain)
+	result := db.Where("domain = ? ", domain.Domain).First(&domain)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		//db.Debug().Create(&host)
-		fmt.Println("create domain")
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Create(&domain)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Create(&domain)
 	} /*else {
 		fmt.Println("update")
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
@@ -191,4 +184,34 @@ func GetNonProcessedTasks() []modelsDatabases.Job {
 	var jobs []modelsDatabases.Job
 	db.Where("processed = ?", false).Preload("Host").Find(&jobs)
 	return jobs
+}
+
+func AddOrUpdateTarget(target string) models.Target {
+	var targetObject models.Target
+	host := GetHost(target)
+	domain := GetDomain(target)
+	// If there is nothing in the datbase for this target
+	if host.Address == "" && domain.Domain == "" {
+		// If the target is an IP we add it in the host table
+		if utils.IsIP(target) {
+			host := &modelsDatabases.Host{}
+			host.Address = target
+			AddOrUpdateHost(host)
+			targetObject = host
+
+			// Otherwise this is a domain and we add it in domain table
+		} else {
+			domain := &modelsDatabases.Domain{}
+			domain.Domain = target
+			AddOrUpdateDomain(domain)
+			targetObject = domain
+		}
+	} else {
+		if host.Address != "" {
+			targetObject = &host
+		} else {
+			targetObject = &domain
+		}
+	}
+	return targetObject
 }
