@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -21,7 +21,7 @@ func Init() {
 	//conn.Logger = conn.Logger.LogMode(logger.Info)
 	conn.Logger = conn.Logger.LogMode(logger.Silent)
 	// Auto Migrate
-	conn.AutoMigrate(&database.Host{}, &database.Port{}, &database.PortComment{}, &database.Job{}, &database.Domain{}) //, &database.HostsPorts{})
+	conn.AutoMigrate(&modelsDatabases.Host{}, &modelsDatabases.Port{}, &modelsDatabases.PortComment{}, &modelsDatabases.Job{}, &modelsDatabases.Domain{}) //, &database.HostsPorts{})
 	// Set table options
 	//db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&database.Host{})
 	/*conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
@@ -32,34 +32,34 @@ func Init() {
 	db = conn
 }
 
-func GetHost(address string) database.Host {
-	var host database.Host
+func GetHost(address string) modelsDatabases.Host {
+	var host modelsDatabases.Host
 	result := db.Where("address = ? or hostname = ?", address, address).Preload("Ports").Preload("Ports.PortComment").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return database.Host{}
+		return modelsDatabases.Host{}
 	}
 	return host
 }
 
-func GetDomain(domainStr string) database.Domain {
-	var domain database.Domain
+func GetDomain(domainStr string) modelsDatabases.Domain {
+	var domain modelsDatabases.Domain
 	result := db.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").First(&domain)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return database.Domain{}
+		return modelsDatabases.Domain{}
 	}
 	return domain
 }
 
-func GetHostWherePort(address, port string) database.Host {
-	var host database.Host
+func GetHostWherePort(address, port string) modelsDatabases.Host {
+	var host modelsDatabases.Host
 	result := db.Joins("JOIN ports ON ports.host_id = hosts.id ").Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return database.Host{}
+		return modelsDatabases.Host{}
 	}
 	return host
 }
 
-func AddOrUpdateHost(host *database.Host) uint {
+func AddOrUpdateHost(host *modelsDatabases.Host) uint {
 	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("address = ? ", host.Address).Debug().FirstOrCreate(host)
 
 	//fmt.Println(result.RowsAffected) // returns found records count
@@ -80,7 +80,7 @@ func AddOrUpdateHost(host *database.Host) uint {
 	return host.ID
 }
 
-func AddOrUpdateDomain(domain *database.Domain) uint {
+func AddOrUpdateDomain(domain *modelsDatabases.Domain) uint {
 	db.Session(&gorm.Session{FullSaveAssociations: true}).Where("domain = ? ", domain.Domain).Debug().FirstOrCreate(domain)
 
 	//fmt.Println(result.RowsAffected) // returns found records count
@@ -130,7 +130,7 @@ func AddOrUpdateDomain(domain *database.Domain) uint {
 
 }*/
 
-func DeleteHost(host database.Host) bool {
+func DeleteHost(host modelsDatabases.Host) bool {
 	result := db.Delete(&host)
 	if result.RowsAffected > 0 {
 		return true
@@ -139,11 +139,11 @@ func DeleteHost(host database.Host) bool {
 
 }
 
-func AddJob(target, parser, taskUUID string) (database.Job, error) {
+func AddJob(target, parser, taskUUID string) (modelsDatabases.Job, error) {
 	var err error
 	host := GetHost(target)
 	domain := GetDomain(target)
-	var job database.Job
+	var job modelsDatabases.Job
 	if host.ID != 0 {
 		job.Host = host
 		job.TaskUUID = taskUUID
@@ -165,7 +165,7 @@ func AddJob(target, parser, taskUUID string) (database.Job, error) {
 	return job, err
 }
 
-func AddDomain(domain database.Domain) {
+func AddDomain(domain modelsDatabases.Domain) {
 	result := db.Where("domain = ? ", domain.Domain).Debug().First(&domain)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
@@ -183,12 +183,12 @@ func AddDomain(domain database.Domain) {
 	}*/
 }
 
-func RemoveJob(job *database.Job) {
-	db.Model(&database.Job{}).Where("id = ?", job.ID).Update("processed", true)
+func RemoveJob(job *modelsDatabases.Job) {
+	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Update("processed", true)
 }
 
-func GetNonProcessedTasks() []database.Job {
-	var jobs []database.Job
+func GetNonProcessedTasks() []modelsDatabases.Job {
+	var jobs []modelsDatabases.Job
 	db.Where("processed = ?", false).Preload("Host").Find(&jobs)
 	return jobs
 }

@@ -7,7 +7,7 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
 	"github.com/nodauf/ReconFramwork/utils"
 )
@@ -32,7 +32,7 @@ func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
 				// Update the object from the database
 				//Convert to ffuf to json, it will contains only the necessary fields
 				commandOutput, _ := json.Marshal(ffuf)
-				portComment := database.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
+				portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
 				host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
 				db.AddOrUpdateHost(&host)
 			} else {

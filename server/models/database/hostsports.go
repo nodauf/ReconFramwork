@@ -1,4 +1,4 @@
-package database
+package modelsDatabases
 
 /*type HostsPorts struct {
 	HostID   int `gorm:"type:bigint unsigned;"`

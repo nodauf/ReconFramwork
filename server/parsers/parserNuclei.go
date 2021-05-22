@@ -6,7 +6,7 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
 )
 
@@ -29,7 +29,7 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 			// Update the object from the database
 			//Convert to nikto to json, it will contains only the necessary fields
 			commandOutput, _ := json.Marshal(nuclei)
-			portComment := database.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
+			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
 			host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
 			db.AddOrUpdateHost(&host)
 

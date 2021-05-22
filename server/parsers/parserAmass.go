@@ -7,7 +7,7 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
 )
 
@@ -23,15 +23,15 @@ func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
 	}
 	fmt.Println(parse.Job)
 	if len(amass.Domains) > 0 {
-		var host database.Host
+		var host modelsDatabases.Host
 		host = parse.Job.Host
 		if host.ID != 0 {
 			for _, domain := range amass.Domains {
-				var domainDB database.Domain
+				var domainDB modelsDatabases.Domain
 
 				domainDB.Domain = domain.Name
 				for _, address := range domain.Addresses {
-					var host database.Host
+					var host modelsDatabases.Host
 					host.Address = address.IP
 					domainDB.Host = append(domainDB.Host, host)
 				}

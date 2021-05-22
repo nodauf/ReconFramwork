@@ -6,7 +6,7 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 )
 
 func (parse Parser) ParseSmbmap(taskName, cmdline, stdout, stderr string) bool {
@@ -27,7 +27,7 @@ func (parse Parser) ParseSmbmap(taskName, cmdline, stdout, stderr string) bool {
 		if strings.Contains(stdout, "WRITE") {
 			comment += "Anonymous WRITE allowed\n"
 		}
-		portComment := database.PortComment{Task: taskName, CommandOutput: string(stdout), Comment: comment}
+		portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(stdout), Comment: comment}
 		host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
 		db.AddOrUpdateHost(&host)
 

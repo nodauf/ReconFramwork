@@ -8,7 +8,7 @@ import (
 	"github.com/nodauf/ReconFramwork/server/config"
 	"github.com/nodauf/ReconFramwork/server/db"
 	"github.com/nodauf/ReconFramwork/server/models"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
@@ -38,14 +38,14 @@ func RunTask(wg *sync.WaitGroup, server *machinery.Server, task, target string) 
 		if host.Address == "" && domain.Domain == "" {
 			// If the target is an IP we add it in the host table
 			if utils.IsIP(target) {
-				host := &database.Host{}
+				host := &modelsDatabases.Host{}
 				host.Address = target
 				db.AddOrUpdateHost(host)
 				targetObject = host
 
 				// Otherwise this is a domain and we add it in domain table
 			} else {
-				domain := &database.Domain{}
+				domain := &modelsDatabases.Domain{}
 				domain.Domain = target
 				db.AddOrUpdateDomain(domain)
 				targetObject = domain

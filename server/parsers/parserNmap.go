@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models/database"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
 	"github.com/nodauf/ReconFramwork/utils"
 )
@@ -23,7 +23,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 	//fmt.Println(string(empJSON))
 
 	// Get the object host from the database if it exists
-	var host database.Host
+	var host modelsDatabases.Host
 	if host = db.GetHost(nmap.Host.Address.Addr); host.Address != "" {
 		for _, port := range host.Ports {
 			portList = append(portList, strconv.Itoa(port.Port))
@@ -32,16 +32,16 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 	} else {
 		host.Address = nmap.Host.Address.Addr
 		if len(nmap.Host.Hostnames.Hostname) > 0 {
-			var domain database.Domain
+			var domain modelsDatabases.Domain
 			domain.Domain = nmap.Host.Hostnames.Hostname[0].Name
 			host.Domain = append(host.Domain, domain)
 		}
 	}
 
-	var ports []database.Port
+	var ports []modelsDatabases.Port
 	for _, portNmap := range nmap.Host.Ports.Port {
 
-		var port database.Port
+		var port modelsDatabases.Port
 		// If we retrieve the object from the database it may already have some ports
 		if index, ok := utils.StringInSlice(portNmap.Portid, portList); ok {
 			port = host.Ports[index]
@@ -52,7 +52,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 			port.Version = portNmap.Service.Version
 		}
 
-		var portComment database.PortComment
+		var portComment modelsDatabases.PortComment
 		portComment.CommandOutput = portNmap.Script.Output
 		portComment.Task = taskName
 		port.PortComment = append(port.PortComment, portComment)
