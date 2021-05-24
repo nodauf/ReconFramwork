@@ -1,9 +1,7 @@
 package parsers
 
 import (
-	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/db"
@@ -13,8 +11,6 @@ import (
 )
 
 func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
-	fmt.Println("parse nmap")
-	fmt.Println(stdout)
 	var nmap modelsParsers.Nmaprun
 	var portList []string
 	// we unmarshal our byteArray which contains our
@@ -57,8 +53,6 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 		}
 	}
 	host.Ports = append(host.Ports, ports...)
-	t, _ := json.MarshalIndent(host, "", " ")
-	fmt.Println(string(t))
 
 	// Workaround attach an existing domain if the host does not exist does not work
 	db.AddOrUpdateHost(&host)
