@@ -17,7 +17,7 @@ type Options struct {
 
 func (options Options) RunTask(wg *sync.WaitGroup, server *machinery.Server, task, target string) {
 	defer wg.Done()
-
+	log.DEBUG.Println("Running task " + task + " over target " + target)
 	var targetObject models.Target
 	targetType := utils.ParseList(config.Config.Command[task].Target)
 	// service is part of the targets, to know if we can use this template for this host
@@ -37,6 +37,10 @@ func (options Options) RunTask(wg *sync.WaitGroup, server *machinery.Server, tas
 
 	} else {
 		targetObject = db.AddOrUpdateTarget(target)
+		//we process for subdomain
+		if options.RecurseOnSubdomain {
+			options.recurseOnSubdomain(wg, server, task, targetObject, "task")
+		}
 		// If the target is the all host no need to specified port or service
 		if _, ok := utils.StringInSlice("host", targetType); ok {
 			//cmd := strings.ReplaceAll(config.Config.Command[task].Cmd, "<target>", target)
@@ -62,16 +66,12 @@ func (options Options) RunTask(wg *sync.WaitGroup, server *machinery.Server, tas
 			log.DEBUG.Println(targetServiceDB)
 			log.ERROR.Println("Impossible to execute the task " + task + ". The host is not found or the host has not the service targeted")
 		}
-		//Now we have process for this host we process for subdomain
 
-		if options.RecurseOnSubdomain {
-			options.recurseOnSubdomain(wg, server, task, targetObject, "target")
-		}
 	}
 }
 
 func (options Options) RunWorkflow(wg *sync.WaitGroup, server *machinery.Server, workflowString, target string) {
-	defer wg.Done()
+	//defer wg.Done()
 
 	// If the destination is a network
 	if utils.IsNetwork(target) {
@@ -82,7 +82,7 @@ func (options Options) RunWorkflow(wg *sync.WaitGroup, server *machinery.Server,
 		}
 		// Execute the command for each host of the network
 		for _, host := range hosts {
-			wg.Add(1)
+			//wg.Add(1)
 			go options.RunWorkflow(wg, server, workflowString, host)
 		}
 
@@ -108,7 +108,7 @@ func (options Options) RunWorkflow(wg *sync.WaitGroup, server *machinery.Server,
 		//Now we have process for this host we process for subdomain
 
 		if options.RecurseOnSubdomain {
-			options.recurseOnSubdomain(wg, server, workflowString, targetObject, "target")
+			options.recurseOnSubdomain(wg, server, workflowString, targetObject, "workflow")
 		}
 	}
 }

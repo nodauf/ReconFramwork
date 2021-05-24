@@ -36,14 +36,17 @@ func hasService(target models.Target, serviceCommand map[string]models.CommandSe
 	return target.HasService(serviceCommand)
 }
 
-func (option *Options) recurseOnSubdomain(wg *sync.WaitGroup, server *machinery.Server, taskWorkflowName string, target models.Target, taskOrWorkflow string) {
-	if target.HasSubdomain() {
+func (options *Options) recurseOnSubdomain(wg *sync.WaitGroup, server *machinery.Server, taskWorkflowName string, target models.Target, taskOrWorkflow string) {
+	if subdomains := target.GetSubdomain(); len(subdomains) > 0 {
 		fmt.Println("recurse on subdomains")
-		if taskOrWorkflow == "task" {
-			wg.Add(1)
-			go option.RunTask(wg, server, taskOrWorkflow, target.GetTarget())
-		} else {
-			go option.RunWorkflow(wg, server, taskOrWorkflow, target.GetTarget())
+		options.RecurseOnSubdomain = false
+		for _, subdomain := range subdomains {
+			if taskOrWorkflow == "task" {
+				wg.Add(1)
+				go options.RunTask(wg, server, taskWorkflowName, subdomain)
+			} else {
+				go options.RunWorkflow(wg, server, taskWorkflowName, subdomain)
+			}
 		}
 	}
 }

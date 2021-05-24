@@ -2,6 +2,6 @@ package models
 
 type Target interface {
 	HasService(map[string]CommandService) map[string]string
-	HasSubdomain() bool
+	GetSubdomain() []string
 	GetTarget() string
 }

@@ -9,8 +9,8 @@ import (
 
 type Domain struct {
 	gorm.Model
-	Domain        string `gorm:"uniqueindex:idx_domain"`
-	SubdomainOfID *uint
+	Domain        string   `gorm:"uniqueindex:idx_domain"`
+	SubdomainOfID *uint    `gorm:"uniqueindex:idx_domain"`
 	SubdomainOf   *Domain  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
 	Subdomain     []Domain `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
 	Host          []Host   `gorm:"many2many:Hosts_Domains;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -29,8 +29,12 @@ func (domain *Domain) HasService(serviceCommand map[string]models.CommandService
 	return targets
 }
 
-func (domain *Domain) HasSubdomain() bool {
-	return len(domain.Subdomain) > 0
+func (domain *Domain) GetSubdomain() []string {
+	var subdomains []string
+	for _, subdomain := range domain.Subdomain {
+		subdomains = append(subdomains, subdomain.Domain)
+	}
+	return subdomains
 }
 
 func (domain *Domain) GetTarget() string {
