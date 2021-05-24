@@ -1,7 +1,6 @@
 package orchestrator
 
 import (
-	"fmt"
 	"reflect"
 	"sync"
 	"time"
@@ -57,8 +56,6 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName strin
 		log.ERROR.Println(err)
 		return
 	}
-	fmt.Println(job.Host)
-	fmt.Println("job added ")
 	results, _ := res.Get(2 * time.Millisecond)
 	var t parsers.Parser
 	t.Job = job
