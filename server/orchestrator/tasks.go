@@ -32,10 +32,10 @@ func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
 	}
 }
 
-func executeCommands(server *machinery.Server, host, cmd, parser, taskName string) {
+func executeCommands(server *machinery.Server, host, cmd, parser, taskName, machineryTask string) {
 	//fmt.Println(cmd)
 	task0 := tasks.Signature{
-		Name: "runcmd",
+		Name: machineryTask,
 		Args: []tasks.Arg{
 			{
 				Type:  "string",

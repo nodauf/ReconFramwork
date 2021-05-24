@@ -26,7 +26,7 @@ func GetMachineryServer() (*machinery.Server, error) {
 	if err == nil {
 
 		err = server.RegisterTasks(map[string]interface{}{
-			"runcmd": tasks.RunCmd,
+			"runCmd": tasks.RunCmd,
 		})
 	}
 	return server, err

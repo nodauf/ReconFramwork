@@ -39,10 +39,10 @@ func getTemplateFiles(filePath string) error {
 			var err error
 			if !de.IsDir() && strings.HasSuffix(filePath, ".yaml") {
 				// if parent directory is commands or workflow
-				switch path.Base(path.Dir(filePath)) {
-				case "commands":
+				pathDir := path.Dir(filePath)
+				if strings.Contains(pathDir, "commands") {
 					err = loadTemplateCommands(filePath)
-				case "workflows":
+				} else if strings.Contains(pathDir, "workflow") {
 					err = loadTemplateWorkflows(filePath)
 				}
 			}

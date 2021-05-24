@@ -10,8 +10,9 @@ import (
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
-func preProcessingTemplate(template models.Command, target, service string) string {
+func preProcessingTemplate(template models.Command, target, service string) (string, string) {
 	var cmd string
+	var machineryTask string
 	if service != "" {
 		targetAndPort := target
 		target = strings.Split(targetAndPort, ":")[0]
@@ -29,7 +30,13 @@ func preProcessingTemplate(template models.Command, target, service string) stri
 	}
 	randString := utils.RandomString(10)
 	cmd = strings.ReplaceAll(cmd, "<randstring>", randString)
-	return cmd
+	if template.CustomTask == "" {
+		machineryTask = "runCmd"
+	} else {
+		machineryTask = template.CustomTask
+	}
+
+	return cmd, machineryTask
 }
 
 func hasService(target models.Target, serviceCommand map[string]models.CommandService) map[string]string {

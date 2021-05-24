@@ -4,6 +4,6 @@ tags:
    - scan
    - quick
 target: network, host
-cmd: nmap --top-port 1000 -oX - <target> -sC
+cmd: nmap --top-port 10 -oX - <target> -sC
 # Function parserNmap called when command executed
 parserFunction: ParseNmap

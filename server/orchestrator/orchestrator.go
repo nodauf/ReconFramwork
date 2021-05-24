@@ -45,33 +45,34 @@ func (options Options) RunTask(wg *sync.WaitGroup, server *machinery.Server, tas
 		if _, ok := utils.StringInSlice("host", targetType); ok {
 			//cmd := strings.ReplaceAll(config.Config.Command[task].Cmd, "<target>", target)
 			parser := config.Config.Command[task].ParserFunction
-			cmd := preProcessingTemplate(config.Config.Command[task], target, "")
-			executeCommands(server, target, cmd, parser, task)
+			cmd, machineryTask := preProcessingTemplate(config.Config.Command[task], target, "")
+			executeCommands(server, target, cmd, parser, task, machineryTask)
 			// If the target is a service and the host has the service in the database from a previous scan
 			//} else if targetServiceDB := db.HostHasService(target, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
 		} else if targetServiceDB := hasService(targetObject, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
 			parser := config.Config.Command[task].ParserFunction
 			for service, targetAndPort := range targetServiceDB {
-				cmd := preProcessingTemplate(config.Config.Command[task], targetAndPort, service)
-				executeCommands(server, target, cmd, parser, task)
+				cmd, machineryTask := preProcessingTemplate(config.Config.Command[task], targetAndPort, service)
+				executeCommands(server, target, cmd, parser, task, machineryTask)
 			}
 			// If the template target the domain, for exemple subdomain enumeration
 		} else if _, ok := utils.StringInSlice("domain", targetType); ok {
 			parser := config.Config.Command[task].ParserFunction
-			cmd := preProcessingTemplate(config.Config.Command[task], target, "")
-			executeCommands(server, target, cmd, parser, task)
+			cmd, machineryTask := preProcessingTemplate(config.Config.Command[task], target, "")
+			executeCommands(server, target, cmd, parser, task, machineryTask)
 		} else {
 			log.DEBUG.Println(task)
+			log.DEBUG.Println(targetType)
 			//log.DEBUG.Println(config.Config.Command)
 			log.DEBUG.Println(targetServiceDB)
-			log.ERROR.Println("Impossible to execute the task " + task + ". The host is not found or the host has not the service targeted")
+			log.ERROR.Println("Impossible to execute the task " + task + ". The host is not found, the host has not the service targeted or the task does not exist")
 		}
 
 	}
 }
 
 func (options Options) RunWorkflow(wg *sync.WaitGroup, server *machinery.Server, workflowString, target string) {
-	//defer wg.Done()
+	defer wg.Done()
 
 	// If the destination is a network
 	if utils.IsNetwork(target) {
