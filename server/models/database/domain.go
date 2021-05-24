@@ -22,7 +22,7 @@ func (domain *Domain) HasService(serviceCommand map[string]models.CommandService
 		for _, port := range host.Ports {
 
 			if _, ok := serviceCommand[port.Service]; ok {
-				targets[port.Service] = host.Address + ":" + strconv.Itoa(port.Port)
+				targets[port.Service] = domain.Domain + ":" + strconv.Itoa(port.Port)
 			}
 		}
 	}
