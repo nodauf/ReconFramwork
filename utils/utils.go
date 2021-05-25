@@ -10,6 +10,7 @@ import (
 	"github.com/RichardKnop/machinery/v1/config"
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/tasks"
+	customTasks "github.com/nodauf/ReconFramwork/tasks/custom"
 )
 
 func init() {
@@ -26,7 +27,8 @@ func GetMachineryServer() (*machinery.Server, error) {
 	if err == nil {
 
 		err = server.RegisterTasks(map[string]interface{}{
-			"runCmd": tasks.RunCmd,
+			"runCmd":         tasks.RunCmd,
+			"DomainFromCert": customTasks.DomainFromCert,
 		})
 	}
 	return server, err
