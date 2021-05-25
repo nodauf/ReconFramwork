@@ -9,20 +9,29 @@ import (
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/RichardKnop/machinery/v1/tasks"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/parsers"
+	parsersCustoms "github.com/nodauf/ReconFramwork/server/parsers/customs"
+	parsersTools "github.com/nodauf/ReconFramwork/server/parsers/tools"
 )
 
 func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
 	defer wg.Done()
 	jobs := db.GetNonProcessedTasks()
 
-	var t parsers.Parser
 	for _, job := range jobs {
 		results, _ := server.GetBackend().GetState(job.TaskUUID)
 		if results.IsSuccess() {
-			t.Job = job
 			reflectResults, _ := tasks.ReflectTaskResults(results.Results)
-			reflect.ValueOf(t).MethodByName(job.Parser).Call(reflectResults)
+
+			// Two seperate package if the parser is for custom tasks or for runCmd task
+			if results.TaskName == "runCmd" {
+				var t parsersTools.Parser
+				t.Job = job
+				reflect.ValueOf(t).MethodByName(job.Parser).Call(reflectResults)
+			} else {
+				var t parsersCustoms.Parser
+				t.Job = job
+				reflect.ValueOf(t).MethodByName(job.Parser).Call(reflectResults)
+			}
 			log.INFO.Println("Done")
 
 			db.RemoveJob(&job)
@@ -34,6 +43,7 @@ func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
 
 func executeCommands(server *machinery.Server, host, cmd, parser, taskName, machineryTask string) {
 	//fmt.Println(cmd)
+
 	task0 := tasks.Signature{
 		Name: machineryTask,
 		Args: []tasks.Arg{
@@ -52,16 +62,24 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 		log.ERROR.Fatalln(err.Error())
 	}
 	job, err := db.AddJob(host, parser, res.GetState().TaskUUID)
+
 	if err != nil {
 		log.ERROR.Println(err)
 		return
 	}
 	results, _ := res.Get(2 * time.Millisecond)
-	var t parsers.Parser
-	t.Job = job
 	//fmt.Println(res.Signature)
 	if results != nil {
-		reflect.ValueOf(t).MethodByName(parser).Call(results)
+		// Two seperate package if the parser is for custom tasks or for runCmd task
+		if taskName == "runCmd" {
+			var t parsersTools.Parser
+			t.Job = job
+			reflect.ValueOf(t).MethodByName(parser).Call(results)
+		} else {
+			var t parsersCustoms.Parser
+			t.Job = job
+			reflect.ValueOf(t).MethodByName(parser).Call(results)
+		}
 	} else {
 		log.ERROR.Println("Task got an error")
 	}

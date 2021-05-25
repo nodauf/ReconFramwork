@@ -1,4 +1,4 @@
-package parsers
+package parsersTools
 
 import (
 	"encoding/json"

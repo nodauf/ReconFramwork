@@ -1,4 +1,4 @@
-package parsers
+package parsersTools
 
 import modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
 
