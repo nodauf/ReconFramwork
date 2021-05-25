@@ -71,7 +71,7 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 	//fmt.Println(res.Signature)
 	if results != nil {
 		// Two seperate package if the parser is for custom tasks or for runCmd task
-		if taskName == "runCmd" {
+		if machineryTask == "runCmd" {
 			var t parsersTools.Parser
 			t.Job = job
 			reflect.ValueOf(t).MethodByName(parser).Call(results)
