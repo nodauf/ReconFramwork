@@ -3,9 +3,7 @@ package orchestrator
 import (
 	"fmt"
 	"strings"
-	"sync"
 
-	"github.com/RichardKnop/machinery/v1"
 	"github.com/nodauf/ReconFramwork/server/models"
 	"github.com/nodauf/ReconFramwork/utils"
 )
@@ -43,16 +41,23 @@ func hasService(target models.Target, serviceCommand map[string]models.CommandSe
 	return target.HasService(serviceCommand)
 }
 
-func (options *Options) recurseOnSubdomain(wg *sync.WaitGroup, server *machinery.Server, taskWorkflowName string, target models.Target, taskOrWorkflow string) {
+func (options Options) recurseOnSubdomain(target models.Target, taskOrWorkflow string) {
 	if subdomains := target.GetSubdomain(); len(subdomains) > 0 {
 		fmt.Println("recurse on subdomains")
 		options.RecurseOnSubdomain = false
 		for _, subdomain := range subdomains {
 			if taskOrWorkflow == "task" {
-				wg.Add(1)
-				go options.RunTask(wg, server, taskWorkflowName, subdomain)
+				options.Wg.Add(1)
+				var optionsSubdomain Options
+				optionsSubdomain = options
+				optionsSubdomain.Target = subdomain
+				go optionsSubdomain.RunTask()
 			} else {
-				go options.RunWorkflow(wg, server, taskWorkflowName, subdomain)
+
+				var optionsSubdomain Options
+				optionsSubdomain = options
+				optionsSubdomain.Target = subdomain
+				go optionsSubdomain.RunWorkflow()
 			}
 		}
 	}
