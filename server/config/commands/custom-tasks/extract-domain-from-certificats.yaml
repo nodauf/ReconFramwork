@@ -1,0 +1,13 @@
+name: Domain-from-certificat
+description: Extract SNI from certificat on https port
+tags: 
+   - discovery
+   - subdomain
+target: service
+service: 
+   https:
+   https-alt:
+cmd: <target>:<port>
+# Function parserNmap called when command executed
+parserFunction: ParseDomainFromCert
+customTask: DomainFromCert
