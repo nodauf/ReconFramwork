@@ -1,29 +1,30 @@
 package main
 
 import (
-	"sync"
-
 	machinery "github.com/RichardKnop/machinery/v1"
-	"github.com/RichardKnop/machinery/v1/log"
 
 	"github.com/nodauf/ReconFramwork/server/config"
 	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/orchestrator"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/prompt"
 )
 
 var taskserver *machinery.Server
 
 func init() {
 	config.LoadConfig()
+	prompt.LoadCompleter()
+
+	db.Init()
 }
 
 func main() {
-	var wg sync.WaitGroup
-	//target := "127.0.0.1/24"
-	//task := "nikto"
-	//task := "ffuf http"
-	//workflow := "discovery http"
+	/*var wg sync.WaitGroup
+	var options orchestrator.Options
+	//options.RecurseOnSubdomain = true
+	target := "audon.fr"
+	task := "ffuf"
+	//task := "Domain from certificat"
+	workflow := "discovery http"
 	db.Init()
 	/*var host database.Host
 	host.Address = "127.0.0.1"
@@ -45,17 +46,22 @@ func main() {
 	host2.Ports[0].Port = 111
 
 	db.AddOrUpdateHost(host2)*/
-	log.INFO.Println("Starting the server")
-	server, err := utils.GetMachineryServer()
-	if err != nil {
-		log.ERROR.Fatalln(err)
-	}
-	wg.Add(1)
-	//go orchestrator.RunTask(wg, server, task, target)
-	go orchestrator.ConsumeEndedTasks(server, &wg)
-	//go orchestrator.RunWorkflow(&wg, server, workflow, target)
+	/*	log.INFO.Println("Starting the server")
+		server, err := utils.GetMachineryServer()
+		if err != nil {
+			log.ERROR.Fatalln(err)
+		}
+		wg.Add(1)
+		options.Target = target
+		options.Wg = &wg
+		options.Server = server
+		options.Task = task
+		options.Workflow = workflow
+		go options.RunTask()
+		//go options.ConsumeEndedTasks(server, &wg)
+		//go options.RunWorkflow(&wg, server, workflow, target)
 
-	wg.Wait()
+		wg.Wait()*/
 	//orchestrator.ExecuteCommands(server, task, target)
-
+	prompt.Prompt()
 }
