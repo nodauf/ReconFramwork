@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
+	"github.com/fatih/color"
 	"github.com/karrick/godirwalk"
 	"gopkg.in/yaml.v2"
 
@@ -25,12 +26,32 @@ func init() {
 	Config.Workflow = make(map[string]models.Workflow)
 }
 
+func SearchTasks(searchString string) {
+	for taskName, command := range Config.Command {
+		if strings.Contains(taskName, searchString) || strings.Contains(command.Description, searchString) {
+			fmt.Println(" - " + color.YellowString(taskName) + " => " + command.Description)
+		}
+	}
+}
+
 func LoadConfig() {
 	err := getTemplateFiles("./config/")
 	if err != nil {
 		log.ERROR.Println(err)
 	}
 
+}
+
+func PrintTasks() {
+	for taskName, command := range Config.Command {
+		fmt.Println(" - " + color.YellowString(taskName) + " => " + command.Description)
+	}
+}
+
+func PrintWorkflows() {
+	for workflowName, workflow := range Config.Workflow {
+		fmt.Println(" - " + color.YellowString(workflowName) + " => " + workflow.Description)
+	}
 }
 
 func getTemplateFiles(filePath string) error {
@@ -101,6 +122,5 @@ func loadTemplateWorkflows(filePath string) error {
 
 	Config.Workflow[workflow.Name] = *workflow
 	//Config.Workflow = append(Config.Workflow, *workflow)
-	fmt.Printf("%#v \n", Config.Command)
 	return nil
 }
