@@ -1,4 +1,5 @@
-name: nmap quick scan
+name: nmap-quick-scan
+description: Use Nmap to scan top 10 ports with default scripts
 tags: 
    - nmap
    - scan

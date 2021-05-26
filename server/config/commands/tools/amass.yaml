@@ -1,4 +1,5 @@
 name: amass
+description: Enumerate subdomain with amass
 tags: 
    - discovery
    - subdomain

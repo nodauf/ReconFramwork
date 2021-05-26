@@ -1,11 +1,12 @@
-name: discovery http
+name: discovery-http
+description: Quick recon of http with nmap and ffuf
 tags:
   - discovery
   - http
 
 commands:
+  - nmap quick scan
   - ffuf
-  - nikto
 
-options:
-  ParallelizeTasks: true
+#options:
+#  ParallelizeTasks: true

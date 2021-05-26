@@ -1,4 +1,5 @@
 name: smbmap
+description: Use smbmap to detect anonymous connection 
 tags:
    - smb
 target: service
