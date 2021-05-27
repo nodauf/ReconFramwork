@@ -5,10 +5,11 @@ import (
 	"strings"
 
 	"github.com/nodauf/ReconFramwork/server/models"
+	modelsConfig "github.com/nodauf/ReconFramwork/server/models/config"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
-func preProcessingTemplate(template models.Command, target, service string) (string, string) {
+func preProcessingTemplate(template modelsConfig.Command, target, service string) (string, string) {
 	var cmd string
 	var machineryTask string
 	if service != "" {
@@ -35,10 +36,6 @@ func preProcessingTemplate(template models.Command, target, service string) (str
 	}
 
 	return cmd, machineryTask
-}
-
-func hasService(target models.Target, serviceCommand map[string]models.CommandService) map[string]string {
-	return target.HasService(serviceCommand)
 }
 
 func (options Options) recurseOnSubdomain(target models.Target, taskOrWorkflow string) {

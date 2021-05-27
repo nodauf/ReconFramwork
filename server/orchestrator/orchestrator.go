@@ -46,7 +46,7 @@ func (options Options) RunTask() {
 			executeCommands(options.Server, options.Target, cmd, parser, options.Task, machineryTask)
 			// If the target is a service and the host has the service in the database from a previous scan
 			//} else if targetServiceDB := db.HostHasService(target, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
-		} else if targetServiceDB := hasService(targetObject, config.Config.Command[options.Task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
+		} else if targetServiceDB := targetObject.HasService(config.Config.Command[options.Task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
 			parser := config.Config.Command[options.Task].ParserFunction
 			for service, targetAndPort := range targetServiceDB {
 				cmd, machineryTask := preProcessingTemplate(config.Config.Command[options.Task], targetAndPort, service)
