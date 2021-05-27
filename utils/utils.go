@@ -44,6 +44,15 @@ func StringInSlice(a string, list []string) (int, bool) {
 	return -1, false
 }
 
+func IntInSlice(a int, list []int) (int, bool) {
+	for i, b := range list {
+		if b == a {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
 func IsNetwork(value string) bool {
 	_, _, errParseCIDR := net.ParseCIDR(value)
 	ip := net.ParseIP(value)
