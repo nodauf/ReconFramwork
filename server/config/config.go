@@ -13,17 +13,17 @@ import (
 	"github.com/karrick/godirwalk"
 	"gopkg.in/yaml.v2"
 
-	"github.com/nodauf/ReconFramwork/server/models"
+	modelsConfig "github.com/nodauf/ReconFramwork/server/models/config"
 )
 
 var Config struct {
-	Command  map[string]models.Command
-	Workflow map[string]models.Workflow
+	Command  map[string]modelsConfig.Command
+	Workflow map[string]modelsConfig.Workflow
 }
 
 func init() {
-	Config.Command = make(map[string]models.Command)
-	Config.Workflow = make(map[string]models.Workflow)
+	Config.Command = make(map[string]modelsConfig.Command)
+	Config.Workflow = make(map[string]modelsConfig.Workflow)
 }
 
 func SearchTasks(searchString string) {
@@ -76,7 +76,7 @@ func getTemplateFiles(filePath string) error {
 }
 
 func loadTemplateCommands(filePath string) error {
-	var command = &models.Command{}
+	var command = &modelsConfig.Command{}
 	//command.Parser = reflect.ValueOf("parsers.ParseSmbMap").Interface().(models.Parser)
 	command.Name = "test"
 	log.INFO.Println("Loading template " + filePath)
@@ -102,7 +102,7 @@ func loadTemplateCommands(filePath string) error {
 }
 
 func loadTemplateWorkflows(filePath string) error {
-	var workflow = &models.Workflow{}
+	var workflow = &modelsConfig.Workflow{}
 	log.INFO.Println("Loading workflow " + filePath)
 	f, err := os.Open(filePath)
 	if err != nil {

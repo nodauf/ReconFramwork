@@ -1,4 +1,4 @@
-package models
+package modelsConfig
 
 type Command struct {
 	Name           string                    `yaml:"name"`

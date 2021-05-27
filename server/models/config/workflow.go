@@ -1,4 +1,4 @@
-package models
+package modelsConfig
 
 type Workflow struct {
 	Name        string         `yaml:"name"`
