@@ -11,7 +11,7 @@ import (
 func (options Options) RunTask() {
 	defer options.Wg.Done()
 	log.DEBUG.Println("Running task " + options.Task + " over target " + options.Target)
-	var targetObject models.Target
+
 	targetType := utils.ParseList(config.Config.Command[options.Task].Target)
 	// service is part of the targets, to know if we can use this template for this host
 	_, targetServiceConfig := utils.StringInSlice("service", targetType)
@@ -33,7 +33,8 @@ func (options Options) RunTask() {
 		}
 
 	} else {
-		targetObject = db.AddOrUpdateTarget(options.Target)
+		targetObject := models.CreateTarget(options.Target)
+		targetObject = db.AddOrUpdateTarget(targetObject)
 		//we process for subdomain
 		if options.RecurseOnSubdomain {
 			options.recurseOnSubdomain(targetObject, "task")
@@ -90,7 +91,9 @@ func (options Options) RunWorkflow() {
 
 		// If the target is the all host no need to specified port or service
 	} else {
-		targetObject := db.AddOrUpdateTarget(options.Target)
+
+		targetObject := models.CreateTarget(options.Target)
+		targetObject = db.AddOrUpdateTarget(targetObject)
 		workflow, ok := config.Config.Workflow[options.Workflow]
 		if ok {
 			//fmt.Println(config.Config.Workflow)

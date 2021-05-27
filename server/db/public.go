@@ -2,6 +2,8 @@ package db
 
 import (
 	"errors"
+	"net"
+	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
@@ -23,6 +25,8 @@ func Init() {
 	conn.Logger = conn.Logger.LogMode(logger.Silent)
 	// Auto Migrate
 	conn.AutoMigrate(&modelsDatabases.Host{}, &modelsDatabases.Port{}, &modelsDatabases.PortComment{}, &modelsDatabases.Job{}, &modelsDatabases.Domain{}) //, &database.HostsPorts{})
+	// The foreign key is not needed by gorm and we don't need it as NULL != NULL, it will break unique index
+	conn.Migrator().DropConstraint(&modelsDatabases.PortComment{}, "fk_domains_port_comment")
 	// Set table options
 	//db.Set("gorm:table_options", "ENGINE=Distributed(cluster, default, hits)").AutoMigrate(&database.Host{})
 	/*conn.Debug().Migrator().CreateConstraint(&database.Host{}, "Ports")
@@ -51,6 +55,21 @@ func GetDomain(domainStr string) modelsDatabases.Domain {
 	return domain
 }
 
+func GetTarget(target string) models.Target {
+	var targetObject models.Target
+	host := GetHost(target)
+	domain := GetDomain(target)
+	// If there is nothing in the datbase for this target
+	if host.Address != "" || domain.Domain != "" {
+		if host.Address != "" {
+			targetObject = &host
+		} else {
+			targetObject = &domain
+		}
+	}
+	return targetObject
+}
+
 func GetHostWherePort(address, port string) modelsDatabases.Host {
 	var host modelsDatabases.Host
 	result := db.Joins("JOIN ports ON ports.host_id = hosts.id ").Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
@@ -60,39 +79,57 @@ func GetHostWherePort(address, port string) modelsDatabases.Host {
 	return host
 }
 
-func AddOrUpdateHost(host *modelsDatabases.Host) uint {
-	result := db.Where("address = ? ", host.Address).First(host)
+func AddOrUpdateHost(host *modelsDatabases.Host) modelsDatabases.Host {
+	var tmp modelsDatabases.Host
+	result := db.Where("address = ? ", host.Address).Preload("Ports").First(&tmp)
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
-
 	// check error ErrRecordNotFound. If the record does not exist we create it. Otherwise we update it
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		db.Debug().Create(&host)
+		db.Create(&host)
 	} else {
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&host)
 		//fmt.Println(host)
 	}
+	// Get the full object of the database
+	db.Where("address = ? ", host.Address).Preload("Ports").First(host)
+
 	//fmt.Println(host.ID)
-	return host.ID
+	return *host
 }
 
-func AddOrUpdateDomain(domain *modelsDatabases.Domain) uint {
-	result := db.Where("domain = ? ", domain.Domain).First(domain)
+func AddOrUpdateDomain(domain *modelsDatabases.Domain) modelsDatabases.Domain {
+	var tmp modelsDatabases.Domain
+	var hosts []modelsDatabases.Host
+	result := db.Where("domain = ? ", domain.Domain).Preload("Host").Preload("Host.Ports").First(&tmp)
 
+	// If the domain has no host we see if there is the IP and add the IP to the host
+	if len(tmp.Host) == 0 {
+		resolveDomain, err := net.LookupHost(domain.Domain)
+		if err == nil {
+			result := db.Debug().Where("address IN ?", resolveDomain).Find(&hosts)
+			if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+				domain.Host = hosts
+			}
+		}
+	}
 	//fmt.Println(result.RowsAffected) // returns found records count
 	//fmt.Println(result.Error)        // returns error
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		db.Create(&domain)
+		db.Debug().Create(&domain)
 	} else {
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
-		db.Session(&gorm.Session{FullSaveAssociations: true}).Save(&domain)
+		db.Session(&gorm.Session{FullSaveAssociations: true}).Preload("Host").Save(&domain)
 		//fmt.Println(host)
 	}
+	// Get the full object of the database
+	db.Where("domain = ? ", domain.Domain).Preload("Host").Preload("Host.Ports").First(domain)
+
 	//fmt.Println(host.ID)
-	return domain.ID
+	return *domain
 }
 
 /*func HostHasService(target string, serviceCommand map[string]models.CommandService) map[string]string {
@@ -186,32 +223,30 @@ func GetNonProcessedTasks() []modelsDatabases.Job {
 	return jobs
 }
 
-func AddOrUpdateTarget(target string) models.Target {
-	var targetObject models.Target
-	host := GetHost(target)
-	domain := GetDomain(target)
-	// If there is nothing in the datbase for this target
-	if host.Address == "" && domain.Domain == "" {
-		// If the target is an IP we add it in the host table
-		if utils.IsIP(target) {
-			host := &modelsDatabases.Host{}
-			host.Address = target
-			AddOrUpdateHost(host)
-			targetObject = host
+func AddOrUpdateTarget(target models.Target) models.Target {
+	var targetToReturn models.Target
+	if utils.IsIP(target.GetTarget()) {
+		host := AddOrUpdateHost(target.(*modelsDatabases.Host))
+		targetToReturn = &host
+	} else {
+		domain := AddOrUpdateDomain(target.(*modelsDatabases.Domain))
+		targetToReturn = &domain
+	}
+	return targetToReturn
+}
 
-			// Otherwise this is a domain and we add it in domain table
-		} else {
-			domain := &modelsDatabases.Domain{}
-			domain.Domain = target
-			AddOrUpdateDomain(domain)
-			targetObject = domain
+func AddPortComment(targetObject models.Target, port int, portComment modelsDatabases.PortComment) error {
+
+	if index := targetObject.HasPort(port); index != -1 {
+		targetList, err := targetObject.AddPortComment(port, portComment)
+		if err != nil {
+			return err
+		}
+		for _, target := range targetList {
+			AddOrUpdateHost(&target)
 		}
 	} else {
-		if host.Address != "" {
-			targetObject = &host
-		} else {
-			targetObject = &domain
-		}
+		return errors.New("The target " + targetObject.GetTarget() + " has not the port " + strconv.Itoa(port))
 	}
-	return targetObject
+	return nil
 }

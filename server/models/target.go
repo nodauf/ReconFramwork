@@ -13,3 +13,21 @@ type Target interface {
 	GetSubdomain() []string
 	GetTarget() string
 }
+
+func CreateTarget(target string) Target {
+	var targetObject Target
+	if utils.IsIP(target) {
+		host := &modelsDatabases.Host{}
+		host.Address = target
+		targetObject = host
+
+		// Otherwise this is a domain and we add it in domain table
+	} else {
+		domain := &modelsDatabases.Domain{}
+		domain.Domain = target
+		targetObject = domain
+	}
+
+	return targetObject
+
+}
