@@ -8,9 +8,9 @@ import (
 	"github.com/RichardKnop/machinery/v1"
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/RichardKnop/machinery/v1/tasks"
-	"github.com/nodauf/ReconFramwork/server/db"
-	parsersCustoms "github.com/nodauf/ReconFramwork/server/parsers/customs"
-	parsersTools "github.com/nodauf/ReconFramwork/server/parsers/tools"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	parsersCustoms "github.com/nodauf/ReconFramwork/server/server/parsers/customs"
+	parsersTools "github.com/nodauf/ReconFramwork/server/server/parsers/tools"
 )
 
 func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
@@ -61,7 +61,7 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 	if err != nil {
 		log.ERROR.Fatalln(err.Error())
 	}
-	job, err := db.AddJob(host, parser, res.GetState().TaskUUID)
+	job, err := db.AddJob(host, parser, res.GetState().TaskUUID, machineryTask, cmd)
 
 	if err != nil {
 		log.ERROR.Println(err)

@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	prompt "github.com/c-bata/go-prompt"
-	"github.com/nodauf/ReconFramwork/server/config"
+	"github.com/nodauf/ReconFramwork/server/server/config"
 )
 
 var commands = []prompt.Suggest{

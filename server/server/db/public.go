@@ -5,8 +5,8 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/nodauf/ReconFramwork/server/models"
-	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
+	"github.com/nodauf/ReconFramwork/server/server/models"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	"github.com/nodauf/ReconFramwork/utils"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -170,23 +170,22 @@ func DeleteHost(host modelsDatabases.Host) bool {
 
 }
 
-func AddJob(target, parser, taskUUID string) (modelsDatabases.Job, error) {
+func AddJob(target, parser, taskUUID, machineryTask, MachineryTaskArgs string) (modelsDatabases.Job, error) {
 	var err error
 	host := GetHost(target)
 	domain := GetDomain(target)
 	var job modelsDatabases.Job
+	job.TaskUUID = taskUUID
+	job.Processed = false
+	job.Parser = parser
+	job.MachineryTask = machineryTask
+	job.MachineryTaskArgs = MachineryTaskArgs
 	if host.ID != 0 {
 		job.Host = host
-		job.TaskUUID = taskUUID
-		job.Processed = false
-		job.Parser = parser
 		db.Create(&job)
 		db.Preload("Host").First(&job)
 	} else if domain.ID != 0 {
 		job.Domain = domain
-		job.TaskUUID = taskUUID
-		job.Processed = false
-		job.Parser = parser
 		db.Create(&job)
 		db.Preload("Domain").First(&job)
 

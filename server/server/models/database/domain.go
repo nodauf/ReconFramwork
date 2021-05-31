@@ -3,7 +3,7 @@ package modelsDatabases
 import (
 	"strconv"
 
-	modelsConfig "github.com/nodauf/ReconFramwork/server/models/config"
+	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 	"gorm.io/gorm"
 )
 

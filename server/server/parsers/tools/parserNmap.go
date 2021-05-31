@@ -4,9 +4,9 @@ import (
 	"encoding/xml"
 	"strconv"
 
-	"github.com/nodauf/ReconFramwork/server/db"
-	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
-	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
+	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 

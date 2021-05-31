@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nodauf/ReconFramwork/server/db"
-	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 )
 
 func (parse Parser) ParseDomainFromCert(taskName, cmdline, stdout, stderr string) bool {

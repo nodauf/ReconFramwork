@@ -6,13 +6,10 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/RichardKnop/machinery/v1/log"
-	prompt "github.com/c-bata/go-prompt"
-	"github.com/nodauf/ReconFramwork/server/config"
-	"github.com/nodauf/ReconFramwork/server/orchestrator"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/config"
+	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 )
 
 var optionsOrchestrator orchestrator.Options
@@ -23,6 +20,7 @@ func handleExit() {
 	rawModeOff.Stdin = os.Stdin
 	_ = rawModeOff.Run()
 	rawModeOff.Wait()
+	optionsOrchestrator.Wg.Done()
 }
 
 func executor(in string) {
@@ -107,25 +105,22 @@ func executor(in string) {
 }
 
 // Prompt run the custom prompt to manage sessions
-func Prompt() {
+func Prompt(options orchestrator.Options) {
+	optionsOrchestrator = options
 	defer handleExit()
 	log.INFO.Println("Starting the server")
-	server, err := utils.GetMachineryServer()
-	if err != nil {
-		log.ERROR.Fatalln(err)
-	}
-	var wg sync.WaitGroup
 
-	optionsOrchestrator.Server = server
-	optionsOrchestrator.Wg = &wg
-
-	p := prompt.New(
+	/*p := prompt.New(
 		executor,
 		complete,
 		prompt.OptionPrefix("ReconFramwork> "),
 		prompt.OptionPrefixTextColor(prompt.Red),
 		prompt.OptionTitle("ReconFramwork"),
 	)
-	p.Run()
-	wg.Wait()
+	p.Run()*/
+	optionsOrchestrator.Target = "localhost"
+	optionsOrchestrator.Task = "nmap-quick-scan"
+	optionsOrchestrator.Wg.Add(1)
+	go optionsOrchestrator.RunTask()
+	optionsOrchestrator.Wg.Wait()
 }

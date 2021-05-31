@@ -2,9 +2,9 @@ package orchestrator
 
 import (
 	"github.com/RichardKnop/machinery/v1/log"
-	"github.com/nodauf/ReconFramwork/server/config"
-	"github.com/nodauf/ReconFramwork/server/db"
-	"github.com/nodauf/ReconFramwork/server/models"
+	"github.com/nodauf/ReconFramwork/server/server/config"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 

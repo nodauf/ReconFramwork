@@ -13,7 +13,7 @@ import (
 	"github.com/karrick/godirwalk"
 	"gopkg.in/yaml.v2"
 
-	modelsConfig "github.com/nodauf/ReconFramwork/server/models/config"
+	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 )
 
 var Config struct {
@@ -35,9 +35,9 @@ func SearchTasks(searchString string) {
 }
 
 func LoadConfig() {
-	err := getTemplateFiles("./config/")
+	err := getTemplateFiles("./server/config/")
 	if err != nil {
-		log.ERROR.Println(err)
+		log.FATAL.Fatalln(err)
 	}
 
 }

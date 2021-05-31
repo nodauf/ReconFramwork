@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nodauf/ReconFramwork/server/models"
-	modelsConfig "github.com/nodauf/ReconFramwork/server/models/config"
+	"github.com/nodauf/ReconFramwork/server/server/models"
+	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 	"github.com/nodauf/ReconFramwork/utils"
 )
 

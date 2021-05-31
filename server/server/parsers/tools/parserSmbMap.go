@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
-	"github.com/nodauf/ReconFramwork/server/db"
-	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 )
 
 func (parse Parser) ParseSmbmap(taskName, cmdline, stdout, stderr string) bool {

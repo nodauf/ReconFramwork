@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 
 	"github.com/RichardKnop/machinery/v1/log"
-	"github.com/nodauf/ReconFramwork/server/db"
-	modelsDatabases "github.com/nodauf/ReconFramwork/server/models/database"
-	modelsParsers "github.com/nodauf/ReconFramwork/server/models/parsers"
+	"github.com/nodauf/ReconFramwork/server/server/db"
+	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
+	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 )
 
 func (parse Parser) ParseNikto(taskName, cmdline, stdout, stderr string) bool {
