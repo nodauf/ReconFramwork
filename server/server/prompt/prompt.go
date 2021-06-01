@@ -8,7 +8,9 @@ import (
 	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
+	prompt "github.com/c-bata/go-prompt"
 	"github.com/nodauf/ReconFramwork/server/server/config"
+	"github.com/nodauf/ReconFramwork/server/server/db"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 )
 
@@ -82,10 +84,25 @@ func executor(in string) {
 			second := command[1]
 			switch strings.ToLower(second) {
 			case "add":
+				if len(command) == 4 {
+					username := command[2]
+					username = strings.ToLower(username)
+					password := command[3]
+					db.AddUser(username, password)
+				} else {
+					// Help for add user
+				}
 			case "delete":
+				if len(command) == 3 {
+					username := command[2]
+					username = strings.ToLower(username)
+					db.DeleteUser(username)
+				} else {
+					// Help for delete user
+				}
 			}
 		} else {
-			//Help for command user
+			//Help for command user and show all users
 		}
 	case "search":
 		if len(command) > 1 {
@@ -110,17 +127,16 @@ func Prompt(options orchestrator.Options) {
 	defer handleExit()
 	log.INFO.Println("Starting the server")
 
-	/*p := prompt.New(
+	p := prompt.New(
 		executor,
 		complete,
 		prompt.OptionPrefix("ReconFramwork> "),
 		prompt.OptionPrefixTextColor(prompt.Red),
 		prompt.OptionTitle("ReconFramwork"),
 	)
-	p.Run()*/
-	optionsOrchestrator.Target = "localhost"
+	p.Run()
+	/*optionsOrchestrator.Target = "localhost"
 	optionsOrchestrator.Task = "nmap-quick-scan"
 	optionsOrchestrator.Wg.Add(1)
-	go optionsOrchestrator.RunTask()
-	optionsOrchestrator.Wg.Wait()
+	go optionsOrchestrator.RunTask()*/
 }

@@ -24,7 +24,7 @@ func init() {
 	//conn.Logger = conn.Logger.LogMode(logger.Info)
 	conn.Logger = conn.Logger.LogMode(logger.Silent)
 	// Auto Migrate
-	conn.AutoMigrate(&modelsDatabases.Host{}, &modelsDatabases.Port{}, &modelsDatabases.PortComment{}, &modelsDatabases.Job{}, &modelsDatabases.Domain{}) //, &database.HostsPorts{})
+	conn.AutoMigrate(&modelsDatabases.Host{}, &modelsDatabases.Port{}, &modelsDatabases.PortComment{}, &modelsDatabases.Job{}, &modelsDatabases.Domain{}, &modelsDatabases.User{}) //, &database.HostsPorts{})
 	// The foreign key is not needed by gorm and we don't need it as NULL != NULL, it will break unique index
 	conn.Migrator().DropConstraint(&modelsDatabases.PortComment{}, "fk_domains_port_comment")
 	// Set table options
