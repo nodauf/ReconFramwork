@@ -15,7 +15,7 @@ import (
 
 var db *gorm.DB
 
-func Init() {
+func init() {
 	dsn := "gorm:gorm@tcp(127.0.0.1:3306)/ReconFramwork?charset=utf8&parseTime=True&loc=Local"
 	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
