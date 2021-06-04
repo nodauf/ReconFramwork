@@ -1,22 +1,16 @@
 package main
 
 import (
-	"sync"
-
 	machinery "github.com/RichardKnop/machinery/v1"
-	"github.com/RichardKnop/machinery/v1/log"
 
-	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 	"github.com/nodauf/ReconFramwork/server/server/prompt"
-	"github.com/nodauf/ReconFramwork/utils"
 )
 
 var taskserver *machinery.Server
 
 func init() {
-	config.LoadConfig()
-	prompt.LoadCompleter()
+	prompt.PrepareCompleter()
 }
 
 func main() {
@@ -65,18 +59,12 @@ func main() {
 
 		wg.Wait()*/
 	//orchestrator.ExecuteCommands(server, task, target)
-	server, err := utils.GetMachineryServer()
-	if err != nil {
-		log.ERROR.Fatalln(err)
-	}
-	var wg sync.WaitGroup
-	var optionsOrchestrator orchestrator.Options
-	optionsOrchestrator.Wg = &wg
-	optionsOrchestrator.Server = server
 
-	wg.Add(1)
+	optionsOrchestrator := orchestrator.NewOptions()
+
+	optionsOrchestrator.Wg.Add(1)
 	go prompt.Prompt(optionsOrchestrator)
 	//wg.Add(1)
 	//go webAPI.Run(optionsOrchestrator)
-	wg.Wait()
+	optionsOrchestrator.Wg.Wait()
 }

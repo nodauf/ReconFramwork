@@ -57,7 +57,7 @@ var usersSubCommand = []prompt.Suggest{
 
 var helpSubCommand = []prompt.Suggest{}
 
-func LoadCompleter() {
+func PrepareCompleter() {
 	for taskName, command := range config.Config.Command {
 		tasksListSubCommand = append(tasksListSubCommand, prompt.Suggest{Text: taskName, Description: command.Description})
 	}
