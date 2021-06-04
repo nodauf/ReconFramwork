@@ -5,7 +5,7 @@ tags:
   - http
 
 commands:
-  - nmap quick scan
+  - nmap-quick-scan
   - ffuf
 
 #options:
