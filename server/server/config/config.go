@@ -11,7 +11,7 @@ import (
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/fatih/color"
 	"github.com/karrick/godirwalk"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 
 	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 )
@@ -24,6 +24,7 @@ var Config struct {
 func init() {
 	Config.Command = make(map[string]modelsConfig.Command)
 	Config.Workflow = make(map[string]modelsConfig.Workflow)
+	loadConfig()
 }
 
 func SearchTasks(searchString string) {
