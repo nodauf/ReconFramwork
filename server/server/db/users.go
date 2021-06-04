@@ -27,12 +27,14 @@ func DeleteUser(username string) (bool, error) {
 	}
 }
 
-func UserExist(username, password string) bool {
+func UserExist(username, password string) (uint, bool) {
 	var user modelsDatabases.User
 	result := db.Where("username = ?", username).First(&user)
 	if result.RowsAffected == 1 || result.Error != nil {
-		return utils.ComparePassword(user.Password, password)
-	} else {
-		return false
+		if utils.ComparePassword(user.Password, password) {
+			return user.ID, true
+		}
 	}
+	return 0, false
+
 }
