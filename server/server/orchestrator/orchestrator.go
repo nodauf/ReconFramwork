@@ -63,7 +63,7 @@ func (options Options) RunTask() {
 			log.DEBUG.Println(targetType)
 			//log.DEBUG.Println(config.Config.Command)
 			log.DEBUG.Println(targetServiceDB)
-			log.ERROR.Println("Impossible to execute the task " + options.Task + ". The host is not found, the host has not the service targeted or the task does not exist")
+			log.ERROR.Println("Impossible to execute the task " + options.Task + ". The host " + options.Target + " has not the service targeted or the task does not exist")
 		}
 
 	}
@@ -101,6 +101,7 @@ func (options Options) RunWorkflow() {
 				log.INFO.Println("Running task: " + task)
 				// wg.Done is done at the end of each tasks
 				options.Wg.Add(1)
+				options.Task = task
 				if workflow.Options.ParallelizeTasks {
 					go options.RunTask()
 				} else {
