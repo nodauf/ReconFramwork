@@ -35,8 +35,8 @@ func SearchTasks(searchString string) {
 	}
 }
 
-func LoadConfig() {
-	err := getTemplateFiles("./server/config/")
+func loadConfig() {
+	err := getTemplateFiles("../server/config/")
 	if err != nil {
 		log.FATAL.Fatalln(err)
 	}

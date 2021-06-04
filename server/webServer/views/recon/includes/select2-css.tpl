@@ -1,0 +1,1 @@
+<link rel="stylesheet" href="/static/plugins/select2/css/select2.css">
