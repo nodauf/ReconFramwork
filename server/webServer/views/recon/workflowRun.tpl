@@ -51,7 +51,7 @@
           </div>
         </div>
             <div class="card-footer">
-              <a href="/recon/workflows/list" class="btn btn-secondary">Cancel</a>
+              <a href="{{urlfor "ReconController.ListWorkflow" }}" class="btn btn-secondary">Cancel</a>
               <input type="submit" value="Run" class="btn btn-success float-right">
             </div>
        

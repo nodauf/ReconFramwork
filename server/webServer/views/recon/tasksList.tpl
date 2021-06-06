@@ -55,12 +55,12 @@
                   {{ end }}
                 </td>
                 <td class="project-actions text-right">
-                  <a class="btn btn-success btn-sm" href="/recon/tasks/run/{{ $taskName }}">
+                  <a class="btn btn-success btn-sm" href="{{urlfor "ReconController.RunTask" ":taskName"  $taskName }}">
                     <i class="fas fa-play">
                     </i>
                     Run
                   </a>
-                  <a class="btn btn-info btn-sm" href="/recon/tasks/edit/{{ $taskName }}">
+                  <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.DetailsResultsWeb" ":taskName"  $taskName }}">
                     <i class="fas fa-pencil-alt">
                     </i>
                     Edit

@@ -36,8 +36,8 @@
     <!-- /.col-->
   </div>
   <div class="card-footer">
-    <a href="/recon/workflows/list" class="btn btn-secondary">Cancel</a>
-    <a href="/recon/workflows/run/{{ .WorkflowName }}" class="btn btn-success float-right">Run</a>
+    <a href="{{urlfor "ReconController.ListWorkflow"}}" class="btn btn-secondary">Cancel</a>
+    <a href="{{urlfor "ReconController.RunWorkflow" ":workflowName"  .WorkflowName }}" class="btn btn-success float-right">Run</a>
   </div>
   <!-- ./row -->
 </section>

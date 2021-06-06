@@ -55,12 +55,12 @@
                   {{ end }}
                 </td>
                 <td class="project-actions text-right">
-                  <a class="btn btn-success btn-sm" href="/recon/workflows/run/{{ $workflowName }}">
+                  <a class="btn btn-success btn-sm" href="{{urlfor "ReconController.RunWorkflow" ":workflowName"  $workflowName }}">
                     <i class="fas fa-play">
                     </i>
                     Run
                   </a>
-                  <a class="btn btn-info btn-sm" href="/recon/workflows/edit/{{ $workflowName }}">
+                  <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.EditWorkflow" ":workflowName"  $workflowName }}">
                     <i class="fas fa-pencil-alt">
                     </i>
                     Edit

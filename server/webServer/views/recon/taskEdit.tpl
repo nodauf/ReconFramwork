@@ -36,8 +36,8 @@
            <!-- /.col-->
          </div>
          <div class="card-footer">
-           <a href="/recon/tasks/list" class="btn btn-secondary">Cancel</a>
-           <a href="/recon/tasks/run/{{ .TaskName }}" class="btn btn-success float-right">Run</a>
+           <a href="{{urlfor "Recon.ListTasks"}}" class="btn btn-secondary">Cancel</a>
+           <a href="{{urlfor "ReconController.RunTask" ":taskName"  .taskName }}" class="btn btn-success float-right">Run</a>
          </div>
          <!-- ./row -->
        </section>
