@@ -38,6 +38,7 @@ func (c *ReconController) RunWorkflow() {
 				}
 				orchestratorOptions.Wg.Add(1)
 				go orchestratorOptions.RunWorkflow()
+				c.Data["Toastr"] = "Workflow has been successfully launch"
 			}
 		}
 

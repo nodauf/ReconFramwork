@@ -1,0 +1,1 @@
+<link rel="stylesheet" href="/static/plugins/toastr/toastr.min.css">

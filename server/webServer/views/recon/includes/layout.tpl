@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/static/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/dist/css/adminlte.min.css">
+   <link rel="stylesheet" href="/static/css/custom.css">
 
   <link rel="stylesheet" href="/static/plugins/select2/css/select2.css">
 
@@ -28,6 +29,10 @@
 
   {{ if .CodeMirror}}
     {{ template "/recon/includes/codemirror-css.tpl" }}
+  {{ end }}
+
+  {{ if .Toastr}}
+    {{ template "/recon/includes/toastr-css.tpl" }}
   {{ end }}
 
 </head>
@@ -101,6 +106,10 @@
 
   {{ if .CodeMirror}}
     {{ template "/recon/includes/codemirror-js.tpl" }}
+  {{ end }}
+
+  {{ if .Toastr}}
+    {{ template "/recon/includes/toastr-js.tpl" .Toastr}}
   {{ end }}
 
 </body>

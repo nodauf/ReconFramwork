@@ -38,6 +38,7 @@ func (c *ReconController) RunTask() {
 				}
 				orchestratorOptions.Wg.Add(1)
 				go orchestratorOptions.RunTask()
+				c.Data["Toastr"] = "Task has been successfully launch"
 			}
 		}
 
