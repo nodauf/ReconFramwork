@@ -1,0 +1,26 @@
+name: gowitness
+description: Take a screenshot
+tags:
+   - http
+target: service
+#service: http, http-proxy # From nmap
+service:
+   http: 
+      variable:
+         protocol: http
+   http-alt: 
+        variable:
+         protocol: http
+   http-proxy: 
+      variable:
+         protocol: http
+   https: 
+      variable:
+         protocol: https
+   # or
+#   - target: port
+#   - port: 445
+cmd: gowitness single <protocol>://<target>:<port> --disable-db -F --delay 5 --chrome-path /usr/bin/brave 1>&2 -o /tmp/<randstring> && cat /tmp/<randstring> | base64 -w 0
+
+parserFunction: ParseGowitness
+printFunction: PrintOutputGowitness
