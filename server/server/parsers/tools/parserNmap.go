@@ -70,3 +70,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 	}
 	return true
 }
+
+func (parse Parser) PrintOutputNmap(data string) string {
+	return data
+}
