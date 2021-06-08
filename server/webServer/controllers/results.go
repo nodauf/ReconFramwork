@@ -29,7 +29,7 @@ func (c *ReconController) ListResults() {
 	c.Data["Results"] = results
 	c.Data["DataTables"] = true
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/results/resultsList.tpl"
+	c.TplName = "recon/results/resultsOverview.tpl"
 }
 
 func (c *ReconController) ListResultsWeb() {
@@ -59,7 +59,14 @@ func (c *ReconController) DetailsResultsWeb() {
 			var argument []reflect.Value
 			argument = append(argument, reflect.ValueOf(commandOutput))
 
-			c.Data["Content"] = m.Call(argument)[0]
+			returnValue := m.Call(argument)
+			content := returnValue[0]
+			html := returnValue[1]
+			if html.Bool() {
+				c.Data["Html"] = content.String()
+			} else {
+				c.Data["Content"] = content.String()
+			}
 		}
 	}
 	c.TplName = "recon/includes/modal-content.tpl"
