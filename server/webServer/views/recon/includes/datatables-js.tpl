@@ -16,20 +16,7 @@
 
 <script>
   $(function () {
-    $("#example").DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-      "buttons": [
-        "copy",
-        "csv",
-        "excel",
-        "pdf",
-        "print",
-        "colvis"
-      ]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
+    $('#tableHosts').DataTable({
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
       "paging": true,
       "lengthChange": false,
@@ -39,7 +26,7 @@
       "autoWidth": false,
       "responsive": true,
       "rowsGroup": [0, 1, 2],
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
+    }).buttons().container().appendTo('#tableHosts_wrapper .col-md-6:eq(0)');
   });
 
 

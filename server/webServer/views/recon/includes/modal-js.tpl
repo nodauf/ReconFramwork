@@ -9,7 +9,7 @@ $("#exampleModal").on("show.bs.modal", function (e) {
 
     $(this).find(".modal-body").load(link.attr("href"), function () {
         $(function () {
-            cm = CodeMirror.fromTextArea(document.getElementById("codeMirrorDemo"), {
+            cm = CodeMirror.fromTextArea(document.getElementById("outputCommand"), {
                 theme: "monokai",
                 readOnly: true,
                 autorefresh: true,

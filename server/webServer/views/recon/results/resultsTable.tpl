@@ -23,7 +23,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example2" class="table table-hover">
+          <table id="tableHosts" class="table table-hover table-striped  ">
             <thead>
               <tr>
                 <th style="width: 35%">
