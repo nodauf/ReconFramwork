@@ -72,21 +72,15 @@
            </a>
          </li>
          <li class="nav-item">
+           <a href="{{urlfor "ReconController.ListAllResults"}}" class="nav-link">
+             <i class="fas fa-circle nav-icon"></i>
+             <p>Details</p>
+           </a>
+         </li>
+         <li class="nav-item">
            <a href="{{urlfor "ReconController.ListResultsWeb"}}" class="nav-link">
              <i class="nav-icon fas fa-circle"></i>
              <p>Web</p>
-           </a>
-         </li>
-         <li class="nav-item">
-           <a href="{{urlfor "ReconController.ListResultsSMB"}}" class="nav-link">
-             <i class="fas fa-circle nav-icon"></i>
-             <p>SMB</p>
-           </a>
-         </li>
-         <li class="nav-item">
-           <a href="{{urlfor "ReconController.ListResultsFTP"}}" class="nav-link">
-             <i class="fas fa-circle nav-icon"></i>
-             <p>FTP</p>
            </a>
          </li>
        </ul>

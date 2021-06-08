@@ -1,4 +1,3 @@
-     {{ template "/recon/includes/modal-layout.tpl"}}
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -56,13 +55,13 @@
                   {{ end }}
                 </td>
                 <td>
-                  {{ $result.WebPort }}
+                  {{ $result.Port }}
                 </td>
                 <td>
                   {{ $result.Task }}
                 </td>
                 <td class="text-right">
-                  <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.DetailsResultsWeb" ":ip" $result.Address ":port" $result.WebPort ":task"  $result.Task }}" data-toggle="modal" data-target="#exampleModal" data-remote="false">
+                  <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.DetailsResultsWeb" ":ip" $result.Address ":port" $result.Port ":task"  $result.Task }}" data-toggle="modal" data-target="#exampleModal" data-remote="false">
                     <i class="fas fa-list">
                     </i>
                     Details

@@ -27,15 +27,11 @@
     {{ template "/recon/includes/datatables-css.tpl" }}
   {{ end }}
 
-  {{ if .CodeMirror}}
-    {{ template "/recon/includes/codemirror-css.tpl" }}
-  {{ end }}
-
   {{ if .Toastr}}
     {{ template "/recon/includes/toastr-css.tpl" }}
   {{ end }}
 
-   {{ if .Modal}}
+   {{ if or (.CodeMirror) (.Modal) (.Tree)}}
      {{ template "/recon/includes/codemirror-css.tpl" }}
   {{ end }}
 
@@ -60,6 +56,10 @@
           {{ .Error }}
           </div>
         {{ end }}
+        {{ if or (.Modal) (.Tree)}}
+          {{ template "/recon/includes/modal-layout.tpl"}}
+        {{ end }}
+
     {{ .LayoutContent}}
     </div>
   <!-- /.content-wrapper -->
@@ -118,6 +118,10 @@
 
   {{ if .Modal}}
     {{ template "/recon/includes/modal-js.tpl" }}
+  {{ end }}
+
+  {{ if .Tree}}
+    {{ template "/recon/includes/tree-js.tpl" .Tree }}
   {{ end }}
 
 </html>

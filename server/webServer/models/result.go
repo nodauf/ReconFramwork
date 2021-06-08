@@ -4,11 +4,6 @@ type Result struct {
 	Address string
 	Domain  []string
 	NbPorts int
-}
-
-type ResultWeb struct {
-	Address string
-	Domain  []string
-	WebPort int
+	Port    int
 	Task    string
 }

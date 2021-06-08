@@ -9,7 +9,7 @@ import (
 
 func GetHost(address string) modelsDatabases.Host {
 	var host modelsDatabases.Host
-	result := db.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)
+	result := db.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").Preload("Domain").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Host{}
 	}

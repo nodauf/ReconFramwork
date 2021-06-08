@@ -55,7 +55,7 @@
                   {{ $result.NbPorts }}
                 </td>
                 <td class="text-right">
-                  <a class="btn btn-info btn-sm" href="/recon/results/details/{{ $result.Address }}">
+                  <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.TreeResults" ":ip" $result.Address}}">
                     <i class="fas fa-list">
                     </i>
                     Details
