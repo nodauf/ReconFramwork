@@ -28,3 +28,4 @@ variable:
 #   - 2.*
 #regexSuccess: "Anonymous connection allowed"
 parserFunction: ParseFfuf
+printFunction: PrintOutputFfuf

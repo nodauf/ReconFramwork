@@ -12,6 +12,7 @@ type Command struct {
 	Regex          []string                  `yaml:"regex,omitempty"`
 	RegexSuccess   string                    `yaml:"regexSuccess,omitempty"`
 	ParserFunction string                    `yaml:"parserFunction,omitempty"`
+	PrintFunction  string                    `yaml:"printFunction,omitempty"`
 	CustomTask     string                    `yaml:"customTask"`
 	//Parser         Parser
 }
