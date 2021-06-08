@@ -39,12 +39,13 @@ func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
 	return true
 }
 
-func (parse Parser) PrintOutputFfuf(data string) string {
+func (parse Parser) PrintOutputFfuf(data string) (string, bool) {
+	html := false
 	var output string
 	var ffuf modelsParsers.Ffuf
 	json.Unmarshal([]byte(data), &ffuf)
 	for _, result := range ffuf.Results {
 		output += result.URL + "\t" + "[Status: " + strconv.Itoa(result.Status) + ", Size: " + strconv.Itoa(result.Length) + ", Lines: " + strconv.Itoa(result.Lines) + "]\n"
 	}
-	return output
+	return output, html
 }
