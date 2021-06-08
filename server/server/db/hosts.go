@@ -16,6 +16,23 @@ func GetHost(address string) modelsDatabases.Host {
 	return host
 }
 
+func GetAllHosts() []modelsDatabases.Host {
+	var listHosts []modelsDatabases.Host
+
+	db.Preload("Domain").Preload("Ports").Preload("Ports.PortComment").Find(&listHosts)
+	return listHosts
+}
+
+func GetAllHostsWhereServices(services []string) []modelsDatabases.Host {
+	var listHosts []modelsDatabases.Host
+	// With this request it will return only the right port for this host. With a where clause it will return all the host with all its ports
+	db.Preload("Domain").
+		Preload("Ports", "service IN ?", services).
+		Preload("Ports.PortComment").
+		Find(&listHosts)
+	return listHosts
+}
+
 func GetHostWherePort(address, port string) modelsDatabases.Host {
 	var host modelsDatabases.Host
 	result := db.Joins("JOIN ports ON ports.host_id = hosts.id ").Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").First(&host)

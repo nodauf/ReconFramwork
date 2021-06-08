@@ -39,135 +39,14 @@
            <a href="#" class="nav-link">
              <i class="nav-icon far fa-plus-square"></i>
              <p>
-               Run a task
-               <i class="fas fa-angle-left right"></i>
+               Run tasks or workflows
              </p>
            </a>
-           <ul class="nav nav-treeview">
-             <li class="nav-item">
-               <a href="#" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>
-                   Login & Register v1
-                   <i class="fas fa-angle-left right"></i>
-                 </p>
-               </a>
-               <ul class="nav nav-treeview">
-                 <li class="nav-item">
-                   <a href="pages/examples/login.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Login v1</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/register.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Register v1</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/forgot-password.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Forgot Password v1</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/recover-password.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Recover Password v1</p>
-                   </a>
-                 </li>
-               </ul>
-             </li>
-             <li class="nav-item">
-               <a href="#" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>
-                   Login & Register v2
-                   <i class="fas fa-angle-left right"></i>
-                 </p>
-               </a>
-               <ul class="nav nav-treeview">
-                 <li class="nav-item">
-                   <a href="pages/examples/login-v2.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Login v2</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/register-v2.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Register v2</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/forgot-password-v2.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Forgot Password v2</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="pages/examples/recover-password-v2.html" class="nav-link">
-                     <i class="far fa-circle nav-icon"></i>
-                     <p>Recover Password v2</p>
-                   </a>
-                 </li>
-               </ul>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/lockscreen.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Lockscreen</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/legacy-user-menu.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Legacy User Menu</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/language-menu.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Language Menu</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/404.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Error 404</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/500.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Error 500</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/pace.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Pace</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="pages/examples/blank.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Blank Page</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="starter.html" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Starter Page</p>
-               </a>
-             </li>
-           </ul>
          </li>
          <li class="nav-header">TASKS</li>
 
          <li class="nav-item">
-           <a href="/recon/tasks/list" class="nav-link">
+           <a href="{{urlfor "ReconController.ListTasks"}}" class="nav-link">
              <i class="nav-icon fas fa-book"></i>
              <p>
                List the tasks
@@ -177,7 +56,7 @@
          </li>
          <li class="nav-header">WORKFLOWS</li>
          <li class="nav-item">
-           <a href="/recon/workflows/list" class="nav-link">
+           <a href="{{urlfor "ReconController.ListWorkflows"}}" class="nav-link">
              <i class="nav-icon fas fa-book"></i>
              <p>
                List the workflows
@@ -187,67 +66,27 @@
          </li>
          <li class="nav-header">RESULTS</li>
          <li class="nav-item">
-           <a href="#" class="nav-link">
+           <a href="{{urlfor "ReconController.ListResults"}}" class="nav-link">
              <i class="fas fa-circle nav-icon"></i>
-             <p>Level 1</p>
+             <p>Overview</p>
            </a>
          </li>
          <li class="nav-item">
-           <a href="#" class="nav-link">
+           <a href="{{urlfor "ReconController.ListResultsWeb"}}" class="nav-link">
              <i class="nav-icon fas fa-circle"></i>
-             <p>
-               Level 1
-               <i class="right fas fa-angle-left"></i>
-             </p>
+             <p>Web</p>
            </a>
-           <ul class="nav nav-treeview">
-             <li class="nav-item">
-               <a href="#" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Level 2</p>
-               </a>
-             </li>
-             <li class="nav-item">
-               <a href="#" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>
-                   Level 2
-                   <i class="right fas fa-angle-left"></i>
-                 </p>
-               </a>
-               <ul class="nav nav-treeview">
-                 <li class="nav-item">
-                   <a href="#" class="nav-link">
-                     <i class="far fa-dot-circle nav-icon"></i>
-                     <p>Level 3</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="#" class="nav-link">
-                     <i class="far fa-dot-circle nav-icon"></i>
-                     <p>Level 3</p>
-                   </a>
-                 </li>
-                 <li class="nav-item">
-                   <a href="#" class="nav-link">
-                     <i class="far fa-dot-circle nav-icon"></i>
-                     <p>Level 3</p>
-                   </a>
-                 </li>
-               </ul>
-             </li>
-             <li class="nav-item">
-               <a href="#" class="nav-link">
-                 <i class="far fa-circle nav-icon"></i>
-                 <p>Level 2</p>
-               </a>
-             </li>
-           </ul>
          </li>
          <li class="nav-item">
-           <a href="#" class="nav-link">
+           <a href="{{urlfor "ReconController.ListResultsSMB"}}" class="nav-link">
              <i class="fas fa-circle nav-icon"></i>
-             <p>Level 1</p>
+             <p>SMB</p>
+           </a>
+         </li>
+         <li class="nav-item">
+           <a href="{{urlfor "ReconController.ListResultsFTP"}}" class="nav-link">
+             <i class="fas fa-circle nav-icon"></i>
+             <p>FTP</p>
            </a>
          </li>
        </ul>

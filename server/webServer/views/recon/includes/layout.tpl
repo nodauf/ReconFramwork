@@ -35,6 +35,10 @@
     {{ template "/recon/includes/toastr-css.tpl" }}
   {{ end }}
 
+   {{ if .Modal}}
+     {{ template "/recon/includes/codemirror-css.tpl" }}
+  {{ end }}
+
 </head>
 
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -112,6 +116,8 @@
     {{ template "/recon/includes/toastr-js.tpl" .Toastr}}
   {{ end }}
 
-</body>
+  {{ if .Modal}}
+    {{ template "/recon/includes/modal-js.tpl" }}
+  {{ end }}
 
 </html>
