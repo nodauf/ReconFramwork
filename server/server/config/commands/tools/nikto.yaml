@@ -28,3 +28,4 @@ cmd: nikto -host <protocol>://<target>:<port> -ask no -o /tmp/<randstring>.json 
 #   - 2.*
 #regexSuccess: "Anonymous connection allowed"
 parserFunction: ParseNikto
+printFunction: PrintOutputNikto
