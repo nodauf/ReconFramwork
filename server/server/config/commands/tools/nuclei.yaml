@@ -22,3 +22,4 @@ service:
 #   - port: 445
 cmd: nuclei -u <protocol>://<target>:<port> -t fuzzing -t default-logins -t dns -t exposed-panels -t exposures -t fuzzing -t iot -t miscellaneous -t misconfiguration -t network -t takeovers -t technologies  -tags "",tech,takeover,network,disclosure,unauth,drupal,apache,misconfig,config,thinkcmf,aem,ssrf,logs,debug,exposure,enum,gitlab,misc,sqlite,aws,cgi,injection,gitlab,fileupload,docker,servicenow,iot,panel,dns,default-login,fuzz,lfi,phpmyadmin -json 
 parserFunction: ParseNuclei
+printFunction: PrintOutputNuclei

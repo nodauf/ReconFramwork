@@ -2,6 +2,7 @@ package parsersTools
 
 import (
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
@@ -22,16 +23,14 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 	}
 	if len(nuclei.Findings) > 0 {
 		target := nuclei.Findings[0].IP
-		port := strings.Split(nuclei.Findings[0].Host, ":")[2]
-		if host := db.GetHostWherePort(target, port); host.Address != "" {
-			// Can only have on port with this value
-			index := 0
-			// Update the object from the database
-			//Convert to nikto to json, it will contains only the necessary fields
+		port, _ := strconv.Atoi(strings.Split(nuclei.Findings[0].Host, ":")[2])
+		if targetObject := db.GetTarget(target); targetObject != nil {
 			commandOutput, _ := json.Marshal(nuclei)
 			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
-			host.Ports[index].PortComment = append(host.Ports[index].PortComment, portComment)
-			db.AddOrUpdateHost(&host)
+			err := db.AddPortComment(targetObject, port, portComment)
+			if err != nil {
+				log.ERROR.Println(err)
+			}
 
 		} else {
 			log.ERROR.Println("Something went wrong. Host " + target + " not found in the database")
@@ -40,4 +39,35 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 		log.INFO.Println("Nothing found by nuclei")
 	}
 	return true
+}
+
+func (parse Parser) PrintOutputNuclei(data string) (string, bool) {
+	html := true
+	var nuclei modelsParsers.Nuclei
+	var output string
+	json.Unmarshal([]byte(data), &nuclei)
+	for _, finding := range nuclei.Findings {
+		var severity string
+		var timestamp string
+		var templateID string
+		var typeString string
+
+		if finding.Info.Severity == "info" {
+			severity = "<span style='color:cyan'>" + finding.Info.Severity + "</span>"
+		} else if finding.Info.Severity == "low" {
+			severity = "<span style='color:mediumseagreen'>" + finding.Info.Severity + "</span>"
+		} else if finding.Info.Severity == "medium" {
+			severity = "<span style='color:yellow'>" + finding.Info.Severity + "</span>"
+		} else if finding.Info.Severity == "high" {
+			severity = "<span style='color:orange'>" + finding.Info.Severity + "</span>"
+		} else if finding.Info.Severity == "critical" {
+			severity = "<span style='color:red'>" + finding.Info.Severity + "</span>"
+		}
+		timestamp = "<span style='color:darkCyan'>" + finding.Timestamp + "</span>"
+		templateID = "<span style='color:mediumseagreen'>" + finding.TemplateID + "</span>"
+		typeString = "<span style='color:dodgerblue'>" + finding.Type + "</span>"
+
+		output += "[" + timestamp + "]\t[" + templateID + "]\t[" + typeString + "]\t[" + severity + "]\t" + finding.Matched + "\n"
+	}
+	return output, html
 }
