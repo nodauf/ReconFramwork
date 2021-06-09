@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/beego/beego/v2/server/web"
-	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/db"
 )
 
@@ -29,8 +28,5 @@ func (c *ReconController) DeleteTarget() {
 		flash.Error("host parameter not found")
 		flash.Store(&c.Controller)
 	}
-	c.Data["Tasks"] = config.Config.Command
-	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/tasksList.tpl"
-	c.Data["DataTables"] = true
+	c.Redirect(c.URLFor("ReconController.OverviewResults"), 302)
 }
