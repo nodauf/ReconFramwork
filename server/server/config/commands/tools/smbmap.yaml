@@ -4,10 +4,12 @@ tags:
    - smb
 target: service
 service: 
-   netbios-ssn:
+   microsoft-ds:
+      variable:
    # or
 #   - target: port
 #   - port 445
-cmd: smbmap -H <target> --no-update
+cmd: smbmap -H <target> -P <port> --no-update --no-color
 # Function parserSmbMap called when command executed
 parserFunction: ParseSmbmap
+printFunction: PrintOutputSmbMap
