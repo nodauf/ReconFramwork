@@ -39,6 +39,7 @@
                   Task name
                 </th>
                 <th style="width: 10%">
+                Actions
                 </th>
               </tr>
             </thead>
