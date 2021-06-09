@@ -61,7 +61,7 @@ func AddOrUpdateHost(host *modelsDatabases.Host) modelsDatabases.Host {
 }
 
 func DeleteHost(host *modelsDatabases.Host) bool {
-	result := db.Delete(&host)
+	result := db.Unscoped().Delete(&host)
 	if result.RowsAffected > 0 {
 		return true
 	}

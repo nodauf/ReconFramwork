@@ -68,7 +68,7 @@ func AddDomain(domain modelsDatabases.Domain) {
 }
 
 func DeleteDomain(domain *modelsDatabases.Domain) bool {
-	result := db.Delete(&domain)
+	result := db.Unscoped().Delete(&domain)
 	if result.RowsAffected > 0 {
 		return true
 	}
