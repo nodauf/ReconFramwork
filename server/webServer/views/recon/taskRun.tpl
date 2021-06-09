@@ -54,7 +54,7 @@
           </div>
         </div>
             <div class="card-footer">
-              <a href="{{urlfor "ReconController.ListTask" }}" class="btn btn-secondary">Cancel</a>
+              <a href="{{urlfor "ReconController.ListTasks" }}" class="btn btn-secondary">Cancel</a>
               <input type="submit" value="Run" class="btn btn-success float-right">
             </div>
        
