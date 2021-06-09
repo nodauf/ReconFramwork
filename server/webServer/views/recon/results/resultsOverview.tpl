@@ -62,7 +62,7 @@
                     Details
                   </a>
 
-                  <a class="btn btn-danger btn-sm" href="{{ urlfor "ReconController.DeleteTarget" ":ip" $result.Address }}" data-toggle="tooltip" data-placement="right" title=" Delete the entire host in the database">
+                  <a class="btn btn-danger btn-sm" href="{{ urlfor "ReconController.DeleteTarget" ":target" $result.Address }}" data-toggle="tooltip" data-placement="right" title=" Delete the entire host in the database">
                     <i class="fas fa-trash">
                     </i>
                     Delete the host
