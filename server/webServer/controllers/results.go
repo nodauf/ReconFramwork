@@ -45,7 +45,7 @@ func (c *ReconController) ListResultsWeb() {
 	c.TplName = "recon/results/resultsTable.tpl"
 }
 
-func (c *ReconController) DetailsResultsWeb() {
+func (c *ReconController) DetailsResults() {
 	ip := c.Ctx.Input.Param(":ip")
 	port := c.Ctx.Input.Param(":port")
 	task := c.Ctx.Input.Param(":task")
@@ -64,7 +64,8 @@ func (c *ReconController) DetailsResultsWeb() {
 			content := returnValue[0]
 			html := returnValue[1]
 			if html.Bool() {
-				c.Data["Html"] = content.String()
+				c.Data["Html"] = true
+				c.Data["Content"] = content.String()
 			} else {
 				c.Data["Content"] = content.String()
 			}
@@ -74,11 +75,13 @@ func (c *ReconController) DetailsResultsWeb() {
 }
 
 func (c *ReconController) TreeResults() {
+	flash := web.ReadFromRequest(&c.Controller)
 	var nodeData, nodeLink string
 	ip := c.Ctx.Input.Param(":ip")
 	if ip != "" {
 		host := db.GetHost(ip)
-		nodeData = `var nodeDataArray = [{
+		if host.Address != "" {
+			nodeData = `var nodeDataArray = [{
 			key: "host",
 			value: "` + host.Address + `",
 		  },
@@ -90,7 +93,7 @@ func (c *ReconController) TreeResults() {
 			key: "domains",
 			value: "Domains",
 		  }`
-		nodeLink = `var linkDataArray = [{
+			nodeLink = `var linkDataArray = [{
 			from: "host",
 			to: "ports"
 		  },
@@ -98,44 +101,57 @@ func (c *ReconController) TreeResults() {
 			from: "host",
 			to: "domains"
 		  }`
-		for i, port := range host.Ports {
-			nodeData += `,{
+			for i, port := range host.Ports {
+				nodeData += `,{
 				key: "p` + strconv.Itoa(i) + `",
 				category: "Port",
 				value: "` + strconv.Itoa(port.Port) + `"
 			  }`
-			nodeLink += `,{
+				nodeLink += `,{
 				from: "ports",
 				to: "p` + strconv.Itoa(i) + `"
 			  }`
-			for j, comment := range port.PortComment {
-				nodeData += `,{
+				for j, comment := range port.PortComment {
+					nodeData += `,{
 					key: "p` + strconv.Itoa(i) + `c` + strconv.Itoa(j) + `",
 					category: "PortComment",
 					value: "` + comment.Task + `",
-					url: "` + web.URLFor("ReconController.DetailsResultsWeb", ":ip", host.Address, ":port", port.Port, ":task", comment.Task) + `"
+					url: "` + web.URLFor("ReconController.DetailsResults", ":ip", host.Address, ":port", port.Port, ":task", comment.Task) + `"
 				  }`
-				nodeLink += `,{
+					nodeLink += `,{
 					from: "p` + strconv.Itoa(i) + `",
 					to: "p` + strconv.Itoa(i) + `c` + strconv.Itoa(j) + `"
 				  }`
+					if comment.DomainID != 0 {
+						nodeLink += `,{
+						from: "d` + strconv.Itoa(int(comment.DomainID)) + `",
+						to: "p` + strconv.Itoa(i) + `c` + strconv.Itoa(j) + `"
+					  }`
+					}
+
+				}
 
 			}
-
-		}
-		for i, domain := range host.Domain {
-			nodeData += `,{
-				key: "d` + strconv.Itoa(i) + `",
+			for _, domain := range host.Domain {
+				nodeData += `,{
+				key: "d` + strconv.Itoa(int(domain.ID)) + `",
 				category: "Domain",
 				value: "` + domain.Domain + `"
 			  }`
-			nodeLink += `,{
+				nodeLink += `,{
 				from: "domains",
-				to: "d` + strconv.Itoa(i) + `"
+				to: "d` + strconv.Itoa(int(domain.ID)) + `"
 			  }`
-		}
+			}
 
-		c.Data["Tree"] = nodeData + "]\n" + nodeLink + "]"
+			c.Data["Tree"] = nodeData + "]\n" + nodeLink + "]"
+		} else {
+			flash.Error("Target not found")
+			flash.Store(&c.Controller)
+		}
+	} else {
+		flash.Error("Target argument not found")
+		flash.Store(&c.Controller)
 	}
 	c.Layout = "recon/includes/layout.tpl"
 	c.TplName = "recon/results/resultsTree.tpl"
