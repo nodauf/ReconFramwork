@@ -66,3 +66,12 @@ func AddDomain(domain modelsDatabases.Domain) {
 		//fmt.Println(host)
 	}*/
 }
+
+func DeleteDomain(domain *modelsDatabases.Domain) bool {
+	result := db.Delete(&domain)
+	if result.RowsAffected > 0 {
+		return true
+	}
+	return false
+
+}

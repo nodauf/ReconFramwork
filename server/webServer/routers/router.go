@@ -25,6 +25,8 @@ func init() {
 	beego.Router("/recon/results/web/details/:ip/:port/:task", &controllers.ReconController{}, "get:DetailsResultsWeb")
 	beego.Router("/recon/results/tree/:ip", &controllers.ReconController{}, "get:TreeResults")
 
+	beego.Router("/recon/targets/delete/:target", &controllers.ReconController{}, "get:DeleteTarget")
+
 	beego.InsertFilter("/*", beego.BeforeRouter, filters.Data)
 	//beego.InsertFilter("/recon/*", beego.BeforeRouter, filters.IsLogin)
 

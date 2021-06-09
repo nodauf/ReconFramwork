@@ -26,7 +26,7 @@
           <table id="tableHosts" class="table table-hover table-striped  ">
             <thead>
               <tr>
-                <th style="width: 35%">
+                <th style="width: 15%">
                   IP
                 </th>
                 <th style="width: 40%">
@@ -35,7 +35,8 @@
                 <th style="width: 15%">
                   Number of port open
                 </th>
-                <th style="width: 10%">
+                <th style="width: 30%">
+                Actions
                 </th>
               </tr>
             </thead>
@@ -59,6 +60,12 @@
                     <i class="fas fa-list">
                     </i>
                     Details
+                  </a>
+
+                  <a class="btn btn-danger btn-sm" href="{{ urlfor "ReconController.DeleteTarget" ":ip" $result.Address }}" data-toggle="tooltip" data-placement="right" title=" Delete the entire host in the database">
+                    <i class="fas fa-trash">
+                    </i>
+                    Delete the host
                   </a>
                 </td>
               </tr>

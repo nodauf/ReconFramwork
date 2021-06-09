@@ -60,7 +60,7 @@ func AddOrUpdateHost(host *modelsDatabases.Host) modelsDatabases.Host {
 	return *host
 }
 
-func DeleteHost(host modelsDatabases.Host) bool {
+func DeleteHost(host *modelsDatabases.Host) bool {
 	result := db.Delete(&host)
 	if result.RowsAffected > 0 {
 		return true

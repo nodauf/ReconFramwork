@@ -67,3 +67,13 @@ func AddPortComment(targetObject models.Target, port int, portComment modelsData
 	}
 	return nil
 }
+
+func DeleteTarget(target models.Target) bool {
+	var returnValue bool
+	if utils.IsIP(target.GetTarget()) {
+		returnValue = DeleteHost(target.(*modelsDatabases.Host))
+	} else {
+		returnValue = DeleteDomain(target.(*modelsDatabases.Domain))
+	}
+	return returnValue
+}

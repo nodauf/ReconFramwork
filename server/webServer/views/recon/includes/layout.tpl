@@ -51,9 +51,14 @@
 
       <!-- Content Wrapper. Contains page content -->
      <div class="content-wrapper">
-        {{ if .Error }}
+        {{ if .flash.error }}
          <div class="alert alert-danger">
-          {{ .Error }}
+          {{ .flash.error}}
+          </div>
+        {{ end }}
+         {{ if .flash.success }}
+         <div class="success alert-success">
+          {{ .flash.success }}
           </div>
         {{ end }}
         {{ if or (.Modal) (.Tree)}}
@@ -99,7 +104,12 @@
   <script src="/static/plugins/jquery-mapael/maps/usa_states.min.js"></script>
   <!-- ChartJS -->
   <script src="/static/plugins/chart.js/Chart.min.js"></script>
-
+  <script>
+  // Enable tooltips everywhere
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
   {{ if .Select2}}
     {{ template "/recon/includes/select2-js.tpl" }}
   {{ end }}
