@@ -1,22 +1,9 @@
   <script src="/static/plugins/GoJS/js/go.js"></script>
-  <script src="/static/plugins/codemirror/codemirror.js"></script>
-  <script src="/static/plugins/codemirror/addon/display/autorefresh.js"></script>
   <script id="code">
   function openModal(url){
   $("#exampleModal").modal('show');
   $(".modal-body").load(url, function () {
-        $(function () {
-            cm = CodeMirror.fromTextArea(document.getElementById("outputCommand"), {
-                theme: "monokai",
-                readOnly: true,
-                autorefresh: true,
-            });
 
-            setTimeout(function () {
-                cm.refresh()
-            }, 200);
-
-        })
 
     });
   }

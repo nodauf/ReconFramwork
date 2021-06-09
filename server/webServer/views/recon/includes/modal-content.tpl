@@ -1,7 +1,5 @@
 {{ if .Html }}
-{{toHTML .Html }}
+<div id="outputCommand" class="p-3">{{toHTML .Content }}</div>
 {{ else }}
-<textarea id="outputCommand" class="p-3">
-{{ .Content }}
-</textarea>
+<div id="outputCommand" class="p-3">{{ .Content }}</div>
 {{ end }}

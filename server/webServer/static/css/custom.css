@@ -1,3 +1,12 @@
 td {
     vertical-align: middle !important;
 }
+
+#outputCommand {
+    background: #272822;
+    color: #f8f8f2;
+    border: 1px solid #eee;
+    height: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}

@@ -31,7 +31,7 @@
     {{ template "/recon/includes/toastr-css.tpl" }}
   {{ end }}
 
-   {{ if or (.CodeMirror) (.Modal) (.Tree)}}
+   {{ if or (.CodeMirror) (.Tree)}}
      {{ template "/recon/includes/codemirror-css.tpl" }}
   {{ end }}
 
