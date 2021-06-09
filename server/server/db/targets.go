@@ -29,11 +29,11 @@ func GetTargets() []string {
 	targets := []struct {
 		Target string
 	}{}
-	db.Distinct("address as target").Table("hosts").Scan(&targets)
+	db.Distinct("address as target").Table("hosts").Where("deleted_at IS null").Scan(&targets)
 	for _, target := range targets {
 		results = append(results, target.Target)
 	}
-	db.Distinct("domain as target").Table("domains").Scan(&targets)
+	db.Distinct("domain as target").Table("domains").Where("deleted_at IS null").Scan(&targets)
 	for _, target := range targets {
 		results = append(results, target.Target)
 	}
