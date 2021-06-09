@@ -35,6 +35,9 @@
                   <label for="inputName">Target (could be a network, hostname or IP) </label>
                   <select class="target-select" name="targets[]" class="form-control" multiple="multiple"
                     style="width: 100%">
+                    {{ range $target := .Targets }}
+                    <option value="{{ $target }}">{{ $target }}</option>
+                    {{ end }}
                   </select>
                 </div>
                 <div class="form-group">

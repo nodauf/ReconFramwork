@@ -24,6 +24,22 @@ func GetTarget(target string) models.Target {
 	return targetObject
 }
 
+func GetTargets() []string {
+	var results []string
+	targets := []struct {
+		Target string
+	}{}
+	db.Distinct("address as target").Table("hosts").Scan(&targets)
+	for _, target := range targets {
+		results = append(results, target.Target)
+	}
+	db.Distinct("domain as target").Table("domains").Scan(&targets)
+	for _, target := range targets {
+		results = append(results, target.Target)
+	}
+	return results
+}
+
 func AddOrUpdateTarget(target models.Target) models.Target {
 	var targetToReturn models.Target
 	if utils.IsIP(target.GetTarget()) {

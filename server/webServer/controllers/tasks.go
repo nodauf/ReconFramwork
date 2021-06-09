@@ -6,6 +6,8 @@ import (
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 	"gopkg.in/yaml.v3"
+
+	"github.com/nodauf/ReconFramwork/server/server/db"
 )
 
 func (c *ReconController) ListTasks() {
@@ -20,6 +22,7 @@ func (c *ReconController) RunTask() {
 	if taskName != "" {
 		if _, ok := config.Config.Command[taskName]; ok {
 			c.Data["TaskName"] = taskName
+			c.Data["Targets"] = db.GetTargets()
 		}
 	}
 	// Execute the task
