@@ -57,7 +57,7 @@
           </div>
         {{ end }}
          {{ if .flash.success }}
-         <div class="success alert-success">
+         <div class="alert alert-success">
           {{ .flash.success }}
           </div>
         {{ end }}
