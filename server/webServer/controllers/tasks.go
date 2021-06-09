@@ -3,6 +3,7 @@ package controllers
 import (
 	"strings"
 
+	"github.com/beego/beego/v2/server/web"
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 	"gopkg.in/yaml.v3"
@@ -18,6 +19,7 @@ func (c *ReconController) ListTasks() {
 }
 
 func (c *ReconController) RunTask() {
+	flash := web.ReadFromRequest(&c.Controller)
 	taskName := c.Ctx.Input.Param(":taskName")
 	if taskName != "" {
 		if _, ok := config.Config.Command[taskName]; ok {
@@ -30,7 +32,8 @@ func (c *ReconController) RunTask() {
 		targets := c.GetStrings("targets[]")
 		recurseOnSubdomain := c.GetString("recurseOnSubdomain")
 		if len(targets) == 0 {
-			c.Data["Error"] = "No target were specified"
+			flash.Error("No target were specified")
+			flash.Store(&c.Controller)
 		} else {
 			for _, target := range targets {
 				orchestratorOptions := orchestrator.NewOptions()
@@ -47,7 +50,8 @@ func (c *ReconController) RunTask() {
 
 	} else if c.Data["TaskName"] == nil {
 		// If the task name in the URL was incorrect or missing
-		c.Data["Error"] = "Task not found"
+		flash.Error("Task not found")
+		flash.Store(&c.Controller)
 	}
 
 	c.Data["Select2"] = true
@@ -56,6 +60,7 @@ func (c *ReconController) RunTask() {
 }
 
 func (c *ReconController) EditTask() {
+	flash := web.ReadFromRequest(&c.Controller)
 	taskName := c.Ctx.Input.Param(":taskName")
 	if taskName != "" {
 		if _, ok := config.Config.Command[taskName]; ok {
@@ -65,7 +70,8 @@ func (c *ReconController) EditTask() {
 		}
 	}
 	if c.Data["Yaml"] == nil {
-		c.Data["Error"] = "Task not found"
+		flash.Error("Task not found")
+		flash.Store(&c.Controller)
 	}
 
 	c.Data["CodeMirror"] = true

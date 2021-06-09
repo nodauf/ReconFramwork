@@ -3,6 +3,7 @@ package controllers
 import (
 	"strings"
 
+	"github.com/beego/beego/v2/server/web"
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 	"gopkg.in/yaml.v3"
@@ -16,6 +17,7 @@ func (c *ReconController) ListWorkflows() {
 }
 
 func (c *ReconController) RunWorkflow() {
+	flash := web.ReadFromRequest(&c.Controller)
 	workflowName := c.Ctx.Input.Param(":workflowName")
 	if workflowName != "" {
 		if _, ok := config.Config.Workflow[workflowName]; ok {
@@ -27,7 +29,8 @@ func (c *ReconController) RunWorkflow() {
 		targets := c.GetStrings("targets[]")
 		recurseOnSubdomain := c.GetString("recurseOnSubdomain")
 		if len(targets) == 0 {
-			c.Data["Error"] = "No target were specified"
+			flash.Error("No target were specified")
+			flash.Store(&c.Controller)
 		} else {
 			for _, target := range targets {
 				orchestratorOptions := orchestrator.NewOptions()
@@ -44,7 +47,8 @@ func (c *ReconController) RunWorkflow() {
 
 	} else if c.Data["WorkflowName"] == nil {
 		// If the workflow name in the URL was incorrect or missing
-		c.Data["Error"] = "Workflow not found"
+		flash.Error("Workflow not found")
+		flash.Store(&c.Controller)
 	}
 
 	c.Data["Select2"] = true
@@ -53,6 +57,7 @@ func (c *ReconController) RunWorkflow() {
 }
 
 func (c *ReconController) EditWorkflow() {
+	flash := web.ReadFromRequest(&c.Controller)
 	workflowName := c.Ctx.Input.Param(":workflowName")
 	if workflowName != "" {
 		if _, ok := config.Config.Workflow[workflowName]; ok {
@@ -62,7 +67,8 @@ func (c *ReconController) EditWorkflow() {
 		}
 	}
 	if c.Data["Yaml"] == nil {
-		c.Data["Error"] = "Workflow not found"
+		flash.Error("Workflow not found")
+		flash.Store(&c.Controller)
 	}
 	c.Data["CodeMirror"] = true
 	c.Layout = "recon/includes/layout.tpl"
