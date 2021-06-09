@@ -1,7 +1,6 @@
 package parsersTools
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -32,6 +31,5 @@ func (parse Parser) ParseGowitness(taskName, cmdline, stdout, stderr string) boo
 func (parse Parser) PrintOutputGowitness(data string) (string, bool) {
 	html := true
 	output := `<img src="data:image/png;base64,` + data + `" alt="Image gowitness" class="img-fluid" />`
-	fmt.Println(output)
 	return string(output), html
 }
