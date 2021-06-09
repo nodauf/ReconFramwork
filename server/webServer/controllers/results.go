@@ -14,7 +14,8 @@ import (
 	"github.com/nodauf/ReconFramwork/utils"
 )
 
-func (c *ReconController) ListResults() {
+func (c *ReconController) OverviewResults() {
+	web.ReadFromRequest(&c.Controller)
 	var results []modelsBeego.Result
 
 	for _, host := range db.GetAllHosts() {

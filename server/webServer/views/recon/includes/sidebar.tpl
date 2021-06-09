@@ -66,7 +66,7 @@
          </li>
          <li class="nav-header">RESULTS</li>
          <li class="nav-item">
-           <a href="{{urlfor "ReconController.ListResults"}}" class="nav-link">
+           <a href="{{urlfor "ReconController.OverviewResults"}}" class="nav-link">
              <i class="fas fa-circle nav-icon"></i>
              <p>Overview</p>
            </a>

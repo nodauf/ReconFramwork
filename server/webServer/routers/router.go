@@ -19,7 +19,7 @@ func init() {
 	beego.Router("/recon/workflows/run/:workflowName", &controllers.ReconController{}, "get,post:RunWorkflow")
 	beego.Router("/recon/workflows/edit/:workflowName", &controllers.ReconController{}, "get,post:EditWorkflow")
 
-	beego.Router("/recon/results/list", &controllers.ReconController{}, "get:ListResults")
+	beego.Router("/recon/results/overview", &controllers.ReconController{}, "get:OverviewResults")
 	beego.Router("/recon/results/listAll", &controllers.ReconController{}, "get:ListAllResults")
 	beego.Router("/recon/results/web/list", &controllers.ReconController{}, "get:ListResultsWeb")
 	beego.Router("/recon/results/web/details/:ip/:port/:task", &controllers.ReconController{}, "get:DetailsResultsWeb")
