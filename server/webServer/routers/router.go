@@ -22,7 +22,7 @@ func init() {
 	beego.Router("/recon/results/overview", &controllers.ReconController{}, "get:OverviewResults")
 	beego.Router("/recon/results/listAll", &controllers.ReconController{}, "get:ListAllResults")
 	beego.Router("/recon/results/web/list", &controllers.ReconController{}, "get:ListResultsWeb")
-	beego.Router("/recon/results/web/details/:ip/:port/:task", &controllers.ReconController{}, "get:DetailsResultsWeb")
+	beego.Router("/recon/results/details/:ip/:port/:task", &controllers.ReconController{}, "get:DetailsResults")
 	beego.Router("/recon/results/tree/:ip", &controllers.ReconController{}, "get:TreeResults")
 
 	beego.Router("/recon/targets/delete/:target", &controllers.ReconController{}, "get:DeleteTarget")
