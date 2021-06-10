@@ -54,7 +54,7 @@ func AddOrUpdateHost(host *modelsDatabases.Host) modelsDatabases.Host {
 			//fmt.Println(host)
 		}
 		// Get the full object of the database
-		db.Where("address = ? ", host.Address).Preload("Ports").First(host)
+		db.Where("address = ? ", host.Address).Preload("Ports").Preload("Domain").First(host)
 	}
 	//fmt.Println(host.ID)
 	return *host
