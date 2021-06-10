@@ -7,14 +7,12 @@ import (
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/orchestrator"
 	"gopkg.in/yaml.v3"
-
-	"github.com/nodauf/ReconFramwork/server/server/db"
 )
 
 func (c *ReconController) ListTasks() {
 	c.Data["Tasks"] = config.Config.Command
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/tasksList.tpl"
+	c.TplName = "recon/tasks/tasksList.tpl"
 	c.Data["DataTables"] = true
 }
 
@@ -24,7 +22,6 @@ func (c *ReconController) RunTask() {
 	if taskName != "" {
 		if _, ok := config.Config.Command[taskName]; ok {
 			c.Data["TaskName"] = taskName
-			c.Data["Targets"] = db.GetTargets()
 		}
 	}
 	// Execute the task
@@ -56,7 +53,7 @@ func (c *ReconController) RunTask() {
 
 	c.Data["Select2"] = true
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/taskRun.tpl"
+	c.TplName = "recon/tasks/taskRun.tpl"
 }
 
 func (c *ReconController) EditTask() {
@@ -76,5 +73,5 @@ func (c *ReconController) EditTask() {
 
 	c.Data["CodeMirror"] = true
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/taskEdit.tpl"
+	c.TplName = "recon/tasks/taskEdit.tpl"
 }

@@ -12,7 +12,7 @@ import (
 func (c *ReconController) ListWorkflows() {
 	c.Data["Workflows"] = config.Config.Workflow
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/workflowsList.tpl"
+	c.TplName = "recon/workflows/workflowsList.tpl"
 	c.Data["DataTables"] = true
 }
 
@@ -53,7 +53,7 @@ func (c *ReconController) RunWorkflow() {
 
 	c.Data["Select2"] = true
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/workflowRun.tpl"
+	c.TplName = "recon/workflows/workflowRun.tpl"
 }
 
 func (c *ReconController) EditWorkflow() {
@@ -72,5 +72,5 @@ func (c *ReconController) EditWorkflow() {
 	}
 	c.Data["CodeMirror"] = true
 	c.Layout = "recon/includes/layout.tpl"
-	c.TplName = "recon/workflowEdit.tpl"
+	c.TplName = "recon/workflows/workflowEdit.tpl"
 }
