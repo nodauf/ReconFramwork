@@ -55,6 +55,16 @@ func (host *Host) GetSubdomain() []string {
 	return []string{}
 }
 
+func (host *Host) GetDomain() []string {
+	var domains []string
+	if len(host.Domain) > 0 {
+		for _, domain := range host.Domain {
+			domains = append(domains, domain.Domain)
+		}
+	}
+	return domains
+}
+
 func (host *Host) GetTarget() string {
 	return host.Address
 }

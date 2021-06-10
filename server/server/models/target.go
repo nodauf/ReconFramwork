@@ -11,6 +11,7 @@ type Target interface {
 	HasPort(int) int
 	AddPortComment(int, modelsDatabases.PortComment) ([]modelsDatabases.Host, error)
 	GetSubdomain() []string
+	GetDomain() []string
 	GetTarget() string
 }
 

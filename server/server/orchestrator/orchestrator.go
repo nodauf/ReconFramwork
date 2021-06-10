@@ -39,6 +39,9 @@ func (options Options) RunTask() {
 		if options.RecurseOnSubdomain {
 			options.recurseOnSubdomain(targetObject, "task")
 		}
+		if options.RunOnAllDomains {
+			options.runOnAllDomains(targetObject)
+		}
 		// If the target is the all host no need to specified port or service
 		if _, ok := utils.StringInSlice("host", targetType); ok {
 			//cmd := strings.ReplaceAll(config.Config.Command[task].Cmd, "<target>", target)

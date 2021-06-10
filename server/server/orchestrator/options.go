@@ -15,6 +15,7 @@ var wg *sync.WaitGroup
 
 type Options struct {
 	RecurseOnSubdomain bool
+	RunOnAllDomains    bool
 	Target             string
 	Task               string
 	Workflow           string
@@ -41,6 +42,7 @@ func NewOptions() Options {
 
 func (options Options) PrintOptions() {
 	fmt.Println("RecurseOnSubdomain => " + strconv.FormatBool(options.RecurseOnSubdomain))
+	fmt.Println("RunOnAllDomains => " + strconv.FormatBool(options.RunOnAllDomains))
 	fmt.Println("Target => " + options.Target)
 	fmt.Println("Task => " + options.Task)
 	fmt.Println("Workflow => " + options.Workflow)

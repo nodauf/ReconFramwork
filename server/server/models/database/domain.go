@@ -62,6 +62,11 @@ func (domain *Domain) GetSubdomain() []string {
 	return subdomains
 }
 
+func (domain *Domain) GetDomain() []string {
+	// A host can't have a Domain
+	return []string{}
+}
+
 func (domain *Domain) GetTarget() string {
 	return domain.Domain
 }

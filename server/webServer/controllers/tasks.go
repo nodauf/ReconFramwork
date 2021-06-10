@@ -28,6 +28,7 @@ func (c *ReconController) RunTask() {
 	if c.Data["TaskName"] != nil && c.Ctx.Request.Method == "POST" {
 		targets := c.GetStrings("targets[]")
 		recurseOnSubdomain := c.GetString("recurseOnSubdomain")
+		runOnAllDomains := c.GetString("runOnAllDomains")
 		if len(targets) == 0 {
 			flash.Error("No target were specified")
 			flash.Store(&c.Controller)
@@ -38,6 +39,9 @@ func (c *ReconController) RunTask() {
 				orchestratorOptions.Task = taskName
 				if strings.ToLower(recurseOnSubdomain) == "on" {
 					orchestratorOptions.RecurseOnSubdomain = true
+				}
+				if strings.ToLower(runOnAllDomains) == "on" {
+					orchestratorOptions.RunOnAllDomains = true
 				}
 				orchestratorOptions.Wg.Add(1)
 				go orchestratorOptions.RunTask()

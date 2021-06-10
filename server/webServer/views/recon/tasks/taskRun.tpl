@@ -41,11 +41,11 @@
                   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                     <input type="checkbox" class="custom-control-input" id="customSwitch3" name="recurseOnSubdomain">
                     <label class="custom-control-label" for="customSwitch3">Recurse on all subdomain of the target in
-                      the database. The target must be a domain</label>
+                      the database.(only for domains))</label>
                   </div>
                   <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch3" name="runOnAllDomains">
-                    <label class="custom-control-label" for="customSwitch3">Run on all domain associated to the IP</label>
+                    <input type="checkbox" class="custom-control-input" id="switchDomains" name="runOnAllDomains">
+                    <label class="custom-control-label" for="switchDomains">Run on all domain associated to the IP (only for IPs)</label>
                   </div>
                 </div>
                 <!-- /.card-body -->
