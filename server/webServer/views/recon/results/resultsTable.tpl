@@ -26,17 +26,20 @@
           <table id="tableHosts" class="table table-hover table-striped  ">
             <thead>
               <tr>
-                <th style="width: 35%">
+                <th style="width: 15%">
                   IP
                 </th>
                 <th style="width: 20%">
                   Domain
                 </th>
                 <th style="width: 15%">
-                  Web Ports
+                  Ports
                 </th>
                  <th style="width: 20%">
                   Task name
+                </th>
+                <th style="width: 20%">
+                  Comment
                 </th>
                 <th style="width: 10%">
                 Actions
@@ -60,6 +63,9 @@
                 </td>
                 <td>
                   {{ $result.Task }}
+                </td>
+                <td>
+                  Comment
                 </td>
                 <td class="text-right">
                   <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.DetailsResults" ":ip" $result.Address ":port" $result.Port ":task"  $result.Task }}" data-toggle="modal" data-target="#exampleModal" data-remote="false">
