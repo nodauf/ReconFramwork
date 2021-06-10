@@ -28,6 +28,14 @@
       "rowsGroup": [0, 1, 2],
     }).buttons().container().appendTo('#tableHosts_wrapper .col-md-6:eq(0)');
   });
+  $('#tableHosts').on('column-visibility.dt', function(e, settings, column, state ){
+
+
+  var table = $('#tableHosts').DataTable();
+   table.drdaw();
+
+
+});
 
 
 </script>
