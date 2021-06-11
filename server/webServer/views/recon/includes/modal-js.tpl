@@ -3,12 +3,12 @@
 $("#exampleModal").on("show.bs.modal", function (e) {
     var link = $(e.relatedTarget);
 
-
     $(this).find(".modal-body").load(link.attr("href"), function () {
-        
-
     });
 
 });
+  $('.modal-dialog').draggable({
+            handle: ".modal-header"
+        });
         
 </script>

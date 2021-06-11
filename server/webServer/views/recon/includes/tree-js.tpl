@@ -7,6 +7,9 @@
 
     });
   }
+    $('.modal-dialog').draggable({
+            handle: ".modal-header"
+        });
     function init() {
       var $ = go.GraphObject.make; // for conciseness in defining templates
       myDiagram =
