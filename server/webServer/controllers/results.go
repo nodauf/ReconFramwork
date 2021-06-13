@@ -10,16 +10,16 @@ import (
 	"github.com/nodauf/ReconFramwork/server/server/db"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	parsersTools "github.com/nodauf/ReconFramwork/server/server/parsers/tools"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 	modelsBeego "github.com/nodauf/ReconFramwork/server/webServer/models"
-	"github.com/nodauf/ReconFramwork/utils"
 )
 
 func (c *ReconController) OverviewResults() {
 	web.ReadFromRequest(&c.Controller)
-	var results []modelsBeego.Result
+	var results []modelsBeego.ResultTask
 
 	for _, host := range db.GetAllHosts() {
-		var result modelsBeego.Result
+		var result modelsBeego.ResultTask
 		result.Address = host.Address
 		for _, domain := range host.Domain {
 			result.Domain = append(result.Domain, domain.Domain)
@@ -34,7 +34,7 @@ func (c *ReconController) OverviewResults() {
 }
 
 func (c *ReconController) ListResultsWeb() {
-	var results []modelsBeego.Result
+	var results []modelsBeego.ResultTask
 	results = hostsToResults(db.GetAllHostsWhereServices(utils.GetWebService()))
 	c.Data["Results"] = results
 	c.Data["Modal"] = true
@@ -156,7 +156,7 @@ func (c *ReconController) TreeResults() {
 }
 
 func (c *ReconController) ListAllResults() {
-	var results []modelsBeego.Result
+	var results []modelsBeego.ResultTask
 	results = hostsToResults(db.GetAllHosts())
 	c.Data["Results"] = results
 	c.Data["Modal"] = true
@@ -165,12 +165,12 @@ func (c *ReconController) ListAllResults() {
 	c.TplName = "recon/results/resultsTable.tpl"
 }
 
-func hostsToResults(hosts []modelsDatabases.Host) []modelsBeego.Result {
-	var results []modelsBeego.Result
+func hostsToResults(hosts []modelsDatabases.Host) []modelsBeego.ResultTask {
+	var results []modelsBeego.ResultTask
 
 	// Loop to create the table with a port per line
 	for _, host := range hosts {
-		var result modelsBeego.Result
+		var result modelsBeego.ResultTask
 		var domainsOfTheHost []string
 
 		result.Address = host.Address

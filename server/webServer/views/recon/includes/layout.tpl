@@ -65,6 +65,10 @@
           {{ template "/recon/includes/modal-layout.tpl"}}
         {{ end }}
 
+        {{ if .ModalTabs}}
+          {{ template "/recon/includes/modalTabs-layout.tpl" }}
+        {{ end }}
+
     {{ .LayoutContent}}
     </div>
   <!-- /.content-wrapper -->
@@ -129,6 +133,10 @@
 
   {{ if .Modal}}
     {{ template "/recon/includes/modal-js.tpl" }}
+  {{ end }}
+
+  {{ if .ModalTabs}}
+    {{ template "/recon/includes/modalTabs-js.tpl" }}
   {{ end }}
 
   {{ if .Tree}}

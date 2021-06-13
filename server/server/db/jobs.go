@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"reflect"
 
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 )
@@ -39,12 +40,25 @@ func UpdateJob(job *modelsDatabases.Job, taskUUID string) {
 	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Update("task_uuid", taskUUID)
 }
 
-func RemoveJob(job *modelsDatabases.Job) {
-	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Update("processed", true)
+func ValidateJob(job *modelsDatabases.Job, resultOutput []reflect.Value) {
+	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Updates(modelsDatabases.Job{Processed: true, RawOutput: resultOutput[0].Bytes()})
 }
 
 func GetNonProcessedTasks() []modelsDatabases.Job {
 	var jobs []modelsDatabases.Job
 	db.Where("processed = ?", false).Preload("Host").Find(&jobs)
 	return jobs
+}
+
+func GetAllJobs() []modelsDatabases.Job {
+	var listJobs []modelsDatabases.Job
+
+	db.Preload("Host").Preload("Domain").Find(&listJobs)
+	return listJobs
+}
+
+func GetJob(id uint) modelsDatabases.Job {
+	var job modelsDatabases.Job
+	db.Preload("Host").Preload("Domain").Where("id = ?", id).Find(&job)
+	return job
 }

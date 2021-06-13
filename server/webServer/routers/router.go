@@ -11,6 +11,8 @@ func init() {
 
 	beego.Router("/recon/", &controllers.ReconController{}, "get:Dashboard")
 
+	beego.Router("/recon/jobs/list", &controllers.ReconController{}, "get:ListJobs")
+
 	beego.Router("/recon/tasks/list", &controllers.ReconController{}, "get:ListTasks")
 	beego.Router("/recon/tasks/run/:taskName", &controllers.ReconController{}, "get,post:RunTask")
 	beego.Router("/recon/tasks/edit/:taskName", &controllers.ReconController{}, "get,post:EditTask")
@@ -26,6 +28,8 @@ func init() {
 	beego.Router("/recon/results/tree/:ip", &controllers.ReconController{}, "get:TreeResults")
 
 	beego.Router("/recon/targets/delete/:target", &controllers.ReconController{}, "get:DeleteTarget")
+
+	beego.Router("/recon/jobs/details/:id", &controllers.ReconController{}, "get:DetailsJob")
 
 	beego.InsertFilter("/*", beego.BeforeRouter, filters.Data)
 	//beego.InsertFilter("/recon/*", beego.BeforeRouter, filters.IsLogin)
