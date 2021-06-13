@@ -10,7 +10,10 @@ import (
 
 func GetDomain(domainStr string) modelsDatabases.Domain {
 	var domain modelsDatabases.Domain
-	result := db.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").Preload("Subdomain").First(&domain)
+	// When we do a lot of select with go routing we need to use transaction to lock the table
+	tx := db.Begin()
+
+	result := tx.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").First(&domain)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Domain{}
 	}
@@ -37,7 +40,7 @@ func AddOrUpdateDomain(domain *modelsDatabases.Domain) modelsDatabases.Domain {
 
 	// check error ErrRecordNotFound
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		db.Debug().Create(&domain)
+		db.Create(&domain)
 	} else {
 		//db.Session(&gorm.Session{FullSaveAssociations: true}).Debug().Save(&host)
 		db.Session(&gorm.Session{FullSaveAssociations: true}).Preload("Host").Save(&domain)

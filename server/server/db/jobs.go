@@ -6,29 +6,37 @@ import (
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 )
 
-func AddJob(target, parser, taskUUID, machineryTask, MachineryTaskArgs string) (modelsDatabases.Job, error) {
+func AddJob(target, parser, machineryTask, MachineryTaskArgs string) (modelsDatabases.Job, error) {
 	var err error
 	host := GetHost(target)
 	domain := GetDomain(target)
 	var job modelsDatabases.Job
-	job.TaskUUID = taskUUID
+	//job.TaskUUID = taskUUID
 	job.Processed = false
 	job.Parser = parser
 	job.MachineryTask = machineryTask
 	job.MachineryTaskArgs = MachineryTaskArgs
+	// When we do a lot of select with go routing we need to use transaction to lock the table
+	tx := db.Begin()
+
 	if host.ID != 0 {
 		job.Host = host
-		db.Create(&job)
-		db.Preload("Host").First(&job)
+		tx.Create(&job)
+		tx.Preload("Host").First(&job)
 	} else if domain.ID != 0 {
 		job.Domain = domain
-		db.Create(&job)
-		db.Preload("Domain").First(&job)
+		tx.Create(&job)
+		tx.Preload("Domain").First(&job)
 
 	} else {
 		err = errors.New("Cannot attach the job to an host or domain")
 	}
+	tx.Commit()
 	return job, err
+}
+
+func UpdateJob(job *modelsDatabases.Job, taskUUID string) {
+	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Update("task_uuid", taskUUID)
 }
 
 func RemoveJob(job *modelsDatabases.Job) {

@@ -9,10 +9,13 @@ import (
 
 func GetHost(address string) modelsDatabases.Host {
 	var host modelsDatabases.Host
-	result := db.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").Preload("Domain").First(&host)
+	// When we do a lot of select with go routing we need to use transaction to lock the table
+	tx := db.Begin()
+	result := tx.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").Preload("Domain").First(&host)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Host{}
 	}
+	tx.Commit()
 	return host
 }
 
@@ -29,6 +32,7 @@ func GetAllHostsWhereServices(services []string) []modelsDatabases.Host {
 	db.Preload("Domain").
 		Preload("Ports", "service IN ?", services).
 		Preload("Ports.PortComment").
+		Preload("Ports.PortComment.Domain").
 		Find(&listHosts)
 	return listHosts
 }
