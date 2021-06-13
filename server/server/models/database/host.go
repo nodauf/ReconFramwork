@@ -50,11 +50,6 @@ func (host *Host) AddPortComment(port int, portComment PortComment) ([]Host, err
 	return []Host{*host}, nil
 }
 
-func (host *Host) GetSubdomain() []string {
-	// A host can't have a subdomain
-	return []string{}
-}
-
 func (host *Host) GetDomain() []string {
 	var domains []string
 	if len(host.Domain) > 0 {
