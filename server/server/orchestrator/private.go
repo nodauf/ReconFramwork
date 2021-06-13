@@ -6,7 +6,7 @@ import (
 	"github.com/nodauf/ReconFramwork/server/server/db"
 	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
 func preProcessingTemplate(template modelsConfig.Command, target, service string) (string, string) {

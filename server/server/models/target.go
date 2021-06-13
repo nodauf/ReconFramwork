@@ -3,7 +3,7 @@ package models
 import (
 	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
 type Target interface {

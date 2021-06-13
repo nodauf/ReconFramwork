@@ -5,7 +5,7 @@ import (
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/db"
 	"github.com/nodauf/ReconFramwork/server/server/models"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
 func (options Options) RunTask() {

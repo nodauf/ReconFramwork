@@ -6,7 +6,7 @@ import (
 
 	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
 func GetTarget(target string) models.Target {

@@ -2,7 +2,7 @@ package db
 
 import (
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
 func AddUser(username, password string) (bool, error) {

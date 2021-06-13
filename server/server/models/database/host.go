@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 	"gorm.io/gorm"
 )
 
