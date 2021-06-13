@@ -77,3 +77,12 @@ func DeleteTarget(target models.Target) bool {
 	}
 	return returnValue
 }
+
+func GetSubdomain(target models.Target) []string {
+	subdomain := []string{}
+	// host can't have a subdomain
+	if !utils.IsIP(target.GetTarget()) {
+		subdomain = GetDomainSubdomain(target.(*modelsDatabases.Domain))
+	}
+	return subdomain
+}

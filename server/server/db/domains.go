@@ -75,3 +75,13 @@ func DeleteDomain(domain *modelsDatabases.Domain) bool {
 	return false
 
 }
+
+func GetDomainSubdomain(domain *modelsDatabases.Domain) []string {
+	var subdomain []string
+	var domains []modelsDatabases.Domain
+	db.Where("domain LIKE ?", "%"+domain.Domain).Find(&domains)
+	for _, domainDB := range domains {
+		subdomain = append(subdomain, domainDB.Domain)
+	}
+	return subdomain
+}

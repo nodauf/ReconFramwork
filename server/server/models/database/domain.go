@@ -9,12 +9,12 @@ import (
 
 type Domain struct {
 	gorm.Model
-	Domain        string        `gorm:"unique"`
-	SubdomainOfID *uint         //`gorm:"uniqueindex:idx_domain"`
-	SubdomainOf   *Domain       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
-	Subdomain     []Domain      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
-	Host          []Host        `gorm:"many2many:Hosts_Domains;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	PortComment   []PortComment `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Domain string `gorm:"unique"`
+	//SubdomainOfID *uint         //`gorm:"uniqueindex:idx_domain"`
+	//SubdomainOf   *Domain       `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
+	//Subdomain     []Domain      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;references:id;foreignkey:SubdomainOfID"`
+	Host        []Host        `gorm:"many2many:Hosts_Domains;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	PortComment []PortComment `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (domain *Domain) HasService(serviceCommand map[string]modelsConfig.CommandService) map[string]string {
@@ -52,14 +52,6 @@ func (domain *Domain) AddPortComment(port int, portComment PortComment) ([]Host,
 		listHost = append(listHost, hostUpdated...)
 	}
 	return listHost, nil
-}
-
-func (domain *Domain) GetSubdomain() []string {
-	var subdomains []string
-	for _, subdomain := range domain.Subdomain {
-		subdomains = append(subdomains, subdomain.Domain)
-	}
-	return subdomains
 }
 
 func (domain *Domain) GetDomain() []string {

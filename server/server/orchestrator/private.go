@@ -3,6 +3,7 @@ package orchestrator
 import (
 	"strings"
 
+	"github.com/nodauf/ReconFramwork/server/server/db"
 	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsConfig "github.com/nodauf/ReconFramwork/server/server/models/config"
 	"github.com/nodauf/ReconFramwork/utils"
@@ -38,7 +39,8 @@ func preProcessingTemplate(template modelsConfig.Command, target, service string
 }
 
 func (options Options) recurseOnSubdomain(target models.Target, taskOrWorkflow string) {
-	if subdomains := target.GetSubdomain(); len(subdomains) > 0 {
+
+	if subdomains := db.GetSubdomain(target); len(subdomains) > 0 {
 		options.RecurseOnSubdomain = false
 		for _, subdomain := range subdomains {
 			if taskOrWorkflow == "task" {

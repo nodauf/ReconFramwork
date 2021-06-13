@@ -10,7 +10,6 @@ type Target interface {
 	HasService(map[string]modelsConfig.CommandService) map[string]string
 	HasPort(int) int
 	AddPortComment(int, modelsDatabases.PortComment) ([]modelsDatabases.Host, error)
-	GetSubdomain() []string
 	GetDomain() []string
 	GetTarget() string
 }
