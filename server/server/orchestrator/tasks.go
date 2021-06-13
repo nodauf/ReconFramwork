@@ -57,16 +57,19 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 			},
 		},
 	}
-	res, err := server.SendTask(&task0)
-	if err != nil {
-		log.ERROR.Fatalln(err.Error())
-	}
-	job, err := db.AddJob(host, parser, res.GetState().TaskUUID, machineryTask, cmd)
+	job, err := db.AddJob(host, parser, machineryTask, cmd)
 
 	if err != nil {
 		log.ERROR.Println(err)
 		return
 	}
+
+	res, err := server.SendTask(&task0)
+	if err != nil {
+		log.ERROR.Fatalln(err.Error())
+	}
+	db.UpdateJob(&job, res.GetState().TaskUUID)
+
 	results, _ := res.Get(2 * time.Millisecond)
 	//fmt.Println(res.Signature)
 	if results != nil {
