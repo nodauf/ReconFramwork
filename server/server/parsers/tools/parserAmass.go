@@ -48,7 +48,7 @@ func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
 					host.Address = address.IP
 					domainDB.Host = append(domainDB.Host, host)
 				}
-				domainDB.SubdomainOf = &parse.Job.Domain
+				//domainDB.SubdomainOf = &parse.Job.Domain
 
 				db.AddDomain(domainDB)
 			}
