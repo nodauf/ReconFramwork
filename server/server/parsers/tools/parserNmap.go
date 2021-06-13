@@ -1,21 +1,25 @@
 package parsersTools
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"strconv"
 
 	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
-	"github.com/nodauf/ReconFramwork/utils"
+	"github.com/nodauf/ReconFramwork/server/server/utils"
 )
 
-func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
+func (parse Parser) ParseNmap(outputBytes []byte) bool {
 	var nmap modelsParsers.Nmaprun
 	var portList []string
+	var output models.Output
+	json.Unmarshal(outputBytes, &output)
 	// we unmarshal our byteArray which contains our
 	// xmlFiles content into 'users' which we defined above
-	xml.Unmarshal([]byte(stdout), &nmap)
+	xml.Unmarshal([]byte(output.Stdout), &nmap)
 	//fmt.Printf("%#v \n", nmap)
 	//empJSON, _ := json.MarshalIndent(nmap, "", "  ")
 	//fmt.Println(string(empJSON))
@@ -46,7 +50,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 
 			var portComment modelsDatabases.PortComment
 			portComment.CommandOutput = portNmap.Script.Output
-			portComment.Task = taskName
+			portComment.Task = output.TaskName
 			port.PortComment = append(port.PortComment, portComment)
 
 			ports = append(ports, port)
@@ -65,7 +69,7 @@ func (parse Parser) ParseNmap(taskName, cmdline, stdout, stderr string) bool {
 
 	//fmt.Println("stdout: " + stdout)
 	//fmt.Println("stderr: " + stderr)
-	if stderr != "" {
+	if output.Stderr != "" || output.Error != nil {
 		return false
 	}
 	return true

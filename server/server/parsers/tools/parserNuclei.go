@@ -7,14 +7,17 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 )
 
-func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
+func (parse Parser) ParseNuclei(outputBytes []byte) bool {
+	var output models.Output
+	json.Unmarshal(outputBytes, &output)
 	var nuclei modelsParsers.Nuclei
 	var nucleiFinding modelsParsers.NucleiFinding
-	for _, finding := range strings.Split(stdout, "\n") {
+	for _, finding := range strings.Split(output.Stdout, "\n") {
 
 		err := json.Unmarshal([]byte(finding), &nucleiFinding)
 		if err == nil {
@@ -27,7 +30,7 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 		if targetObject := db.GetTarget(target); targetObject != nil {
 			comment := stats(nuclei)
 			commandOutput, _ := json.Marshal(nuclei)
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
+			portComment := modelsDatabases.PortComment{Task: output.TaskName, CommandOutput: string(commandOutput), Comment: comment}
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {
 				log.ERROR.Println(err)

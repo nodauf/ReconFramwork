@@ -7,14 +7,17 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 )
 
-func (parse Parser) ParseNikto(taskName, cmdline, stdout, stderr string) bool {
+func (parse Parser) ParseNikto(outputBytes []byte) bool {
 	var nikto modelsParsers.Nikto
+	var output models.Output
+	json.Unmarshal(outputBytes, &output)
 
-	err := json.Unmarshal([]byte(stdout), &nikto)
+	err := json.Unmarshal([]byte(output.Stdout), &nikto)
 
 	if err == nil && len(nikto.Vulnerabilities) > 0 {
 		target := nikto.IP
@@ -26,7 +29,7 @@ func (parse Parser) ParseNikto(taskName, cmdline, stdout, stderr string) bool {
 			if strings.Contains(string(commandOutput), "Directory listing found") {
 				comment = "Directory indexing found"
 			}
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
+			portComment := modelsDatabases.PortComment{Task: output.TaskName, CommandOutput: string(commandOutput), Comment: comment}
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {
 				log.ERROR.Println(err)

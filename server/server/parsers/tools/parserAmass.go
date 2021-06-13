@@ -6,14 +6,17 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 )
 
-func (parse Parser) ParseAmass(taskName, cmdline, stdout, stderr string) bool {
+func (parse Parser) ParseAmass(outputBytes []byte) bool {
 	var amass modelsParsers.Amass
 	var amassDomain modelsParsers.AmassDomain
-	for _, domain := range strings.Split(stdout, "\n") {
+	var output models.Output
+	json.Unmarshal(outputBytes, &output)
+	for _, domain := range strings.Split(output.Stdout, "\n") {
 
 		err := json.Unmarshal([]byte(domain), &amassDomain)
 		if err == nil {

@@ -7,13 +7,16 @@ import (
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/db"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 	modelsParsers "github.com/nodauf/ReconFramwork/server/server/models/parsers"
 )
 
-func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
+func (parse Parser) ParseFfuf(outputBytes []byte) bool {
 	var ffuf modelsParsers.Ffuf
-	err := json.Unmarshal([]byte(stdout), &ffuf)
+	var output models.Output
+	json.Unmarshal(outputBytes, &output)
+	err := json.Unmarshal([]byte(output.Stdout), &ffuf)
 
 	// If there is something found by ffuf
 	if err == nil && len(ffuf.Results) > 0 {
@@ -26,7 +29,7 @@ func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
 			// Update the object from the database
 			//Convert to ffuf to json, it will contains only the necessary fields
 			commandOutput, _ := json.Marshal(ffuf)
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
+			portComment := modelsDatabases.PortComment{Task: output.TaskName, CommandOutput: string(commandOutput), Comment: comment}
 
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {

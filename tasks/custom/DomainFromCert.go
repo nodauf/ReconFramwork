@@ -2,23 +2,28 @@ package customTasks
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"net"
 	"regexp"
+
+	"github.com/nodauf/ReconFramwork/server/server/models"
 )
 
-func DomainFromCert(taskName, cmd string) (string, string, string, string, error) {
+func DomainFromCert(taskName, cmd string) ([]byte, error) {
 	var certificates string
+	var output models.Output
+	output.TaskName = taskName
+	output.Cmd = cmd
 
 	conn, err := tls.Dial("tcp", cmd, &tls.Config{
 		InsecureSkipVerify: true,
 	})
 	if err != nil {
-		return taskName, cmd, "", "", err
+		output.Error = err
+		outputBytes, _ := json.Marshal(output)
+		return outputBytes, nil
 	}
 	state := conn.ConnectionState()
-	if err != nil {
-		return taskName, cmd, "", "", err
-	}
 
 	conn.Close()
 
@@ -35,7 +40,9 @@ func DomainFromCert(taskName, cmd string) (string, string, string, string, error
 		}
 
 	}
-	return taskName, cmd, certificates, "", nil
+	output.Stdout = certificates
+	outputBytes, _ := json.Marshal(output)
+	return outputBytes, nil
 }
 
 func resolveHostname(hostname string) string {
