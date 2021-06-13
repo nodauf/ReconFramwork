@@ -21,10 +21,12 @@ func (parse Parser) ParseFfuf(taskName, cmdline, stdout, stderr string) bool {
 		target := strings.Split(commandline, ":")[0]
 		port, _ := strconv.Atoi(strings.Split(commandline, ":")[1])
 		if targetObject := db.GetTarget(target); targetObject != nil {
+			var comment string
+			comment = strconv.Itoa(len(ffuf.Results)) + " element found"
 			// Update the object from the database
 			//Convert to ffuf to json, it will contains only the necessary fields
 			commandOutput, _ := json.Marshal(ffuf)
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
+			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
 
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {

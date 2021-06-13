@@ -3,6 +3,7 @@ package parsersTools
 import (
 	"encoding/json"
 	"strconv"
+	"strings"
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/db"
@@ -12,6 +13,7 @@ import (
 
 func (parse Parser) ParseNikto(taskName, cmdline, stdout, stderr string) bool {
 	var nikto modelsParsers.Nikto
+
 	err := json.Unmarshal([]byte(stdout), &nikto)
 
 	if err == nil && len(nikto.Vulnerabilities) > 0 {
@@ -19,8 +21,12 @@ func (parse Parser) ParseNikto(taskName, cmdline, stdout, stderr string) bool {
 		port, _ := strconv.Atoi(nikto.Port)
 
 		if targetObject := db.GetTarget(target); targetObject != nil {
+			var comment string
 			commandOutput, _ := json.Marshal(nikto)
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
+			if strings.Contains(string(commandOutput), "Directory listing found") {
+				comment = "Directory indexing found"
+			}
+			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {
 				log.ERROR.Println(err)

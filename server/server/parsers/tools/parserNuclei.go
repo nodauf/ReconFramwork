@@ -25,8 +25,9 @@ func (parse Parser) ParseNuclei(taskName, cmdline, stdout, stderr string) bool {
 		target := nuclei.Findings[0].IP
 		port, _ := strconv.Atoi(strings.Split(nuclei.Findings[0].Host, ":")[2])
 		if targetObject := db.GetTarget(target); targetObject != nil {
+			comment := stats(nuclei)
 			commandOutput, _ := json.Marshal(nuclei)
-			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput)}
+			portComment := modelsDatabases.PortComment{Task: taskName, CommandOutput: string(commandOutput), Comment: comment}
 			err := db.AddPortComment(targetObject, port, portComment)
 			if err != nil {
 				log.ERROR.Println(err)
@@ -70,4 +71,24 @@ func (parse Parser) PrintOutputNuclei(data string) (string, bool) {
 		output += "[" + timestamp + "]\t[" + templateID + "]\t[" + typeString + "]\t[" + severity + "]\t" + finding.Matched + "\n"
 	}
 	return output, html
+}
+
+func stats(findings modelsParsers.Nuclei) string {
+	var infoNb, lowNb, mediumNb, highNb, criticalNb int
+	var comment string
+	for _, finding := range findings.Findings {
+		if finding.Info.Severity == "info" {
+			infoNb++
+		} else if finding.Info.Severity == "low" {
+			lowNb++
+		} else if finding.Info.Severity == "medium" {
+			mediumNb++
+		} else if finding.Info.Severity == "high" {
+			highNb++
+		} else if finding.Info.Severity == "critical" {
+			criticalNb++
+		}
+	}
+	comment = "Findings severity: " + strconv.Itoa(infoNb) + " info, " + strconv.Itoa(lowNb) + " low, " + strconv.Itoa(mediumNb) + " medium, " + strconv.Itoa(highNb) + " high, " + strconv.Itoa(criticalNb) + " critical."
+	return comment
 }
