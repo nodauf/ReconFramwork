@@ -1,6 +1,8 @@
 package modelsDatabases
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Job struct {
 	gorm.Model
@@ -13,4 +15,5 @@ type Job struct {
 	Parser            string
 	MachineryTask     string
 	MachineryTaskArgs string
+	RawOutput         []byte
 }

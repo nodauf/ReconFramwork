@@ -34,7 +34,7 @@ func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
 			}
 			log.INFO.Println("Done")
 
-			db.RemoveJob(&job)
+			db.ValidateJob(&job, reflectResults)
 		} else {
 			log.INFO.Println("Not success")
 		}
@@ -86,6 +86,6 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 	} else {
 		log.ERROR.Println("Task got an error")
 	}
-	db.RemoveJob(&job)
+	db.ValidateJob(&job, results)
 
 }
