@@ -42,14 +42,20 @@ func (domain *Domain) HasPort(port int) int {
 // We assume the domain is the same on each IP
 func (domain *Domain) AddPortComment(port int, portComment PortComment) ([]Host, error) {
 	var listHost []Host
+	var err error
+	var hostUpdated []Host
 	// Add the domain ID as it will not be added by gorm
 	portComment.DomainID = domain.ID
 	for _, host := range domain.Host {
-		hostUpdated, err := host.AddPortComment(port, portComment)
+		hostUpdated, err = host.AddPortComment(port, portComment)
 		if err != nil {
-			return []Host{}, err
+			continue
+			//return []Host{}, err
 		}
 		listHost = append(listHost, hostUpdated...)
+	}
+	if len(listHost) == 0 {
+		return []Host{}, err
 	}
 	return listHost, nil
 }
