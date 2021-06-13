@@ -19,13 +19,14 @@
     $('#tableHosts').DataTable({
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
       "paging": true,
-      "lengthChange": false,
+      "lengthChange": true,
       "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": false,
       "responsive": true,
       "rowsGroup": [0, 1, 2],
+      "alengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
     }).buttons().container().appendTo('#tableHosts_wrapper .col-md-6:eq(0)');
   });
   $('#tableHosts').on('column-visibility.dt', function(e, settings, column, state ){
