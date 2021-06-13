@@ -19,7 +19,7 @@ func GetHost(address string) modelsDatabases.Host {
 func GetAllHosts() []modelsDatabases.Host {
 	var listHosts []modelsDatabases.Host
 
-	db.Preload("Domain").Preload("Ports").Preload("Ports.PortComment").Find(&listHosts)
+	db.Preload("Domain").Preload("Ports").Preload("Ports.PortComment").Preload("Ports.PortComment.Domain").Find(&listHosts)
 	return listHosts
 }
 

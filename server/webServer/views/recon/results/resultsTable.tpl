@@ -65,7 +65,7 @@
                   {{ $result.Task }}
                 </td>
                 <td>
-                  Comment
+                   {{ $result.Comment }}
                 </td>
                 <td class="text-right">
                   <a class="btn btn-info btn-sm" href="{{urlfor "ReconController.DetailsResults" ":ip" $result.Address ":port" $result.Port ":task"  $result.Task }}" data-toggle="modal" data-target="#exampleModal" data-remote="false">

@@ -35,10 +35,8 @@ func (c *ReconController) OverviewResults() {
 
 func (c *ReconController) ListResultsWeb() {
 	var results []modelsBeego.Result
-	var sizeRowSpan []int
-	sizeRowSpan, results = hostsToResults(db.GetAllHostsWhereServices(utils.GetWebService()))
+	results = hostsToResults(db.GetAllHostsWhereServices(utils.GetWebService()))
 	c.Data["Results"] = results
-	c.Data["SizeRowSpan"] = sizeRowSpan
 	c.Data["Modal"] = true
 	c.Data["DataTables"] = true
 	c.Layout = "recon/includes/layout.tpl"
@@ -159,41 +157,38 @@ func (c *ReconController) TreeResults() {
 
 func (c *ReconController) ListAllResults() {
 	var results []modelsBeego.Result
-	var sizeRowSpan []int
-	sizeRowSpan, results = hostsToResults(db.GetAllHosts())
+	results = hostsToResults(db.GetAllHosts())
 	c.Data["Results"] = results
-	c.Data["SizeRowSpan"] = sizeRowSpan
 	c.Data["Modal"] = true
 	c.Data["DataTables"] = true
 	c.Layout = "recon/includes/layout.tpl"
 	c.TplName = "recon/results/resultsTable.tpl"
 }
 
-func hostsToResults(hosts []modelsDatabases.Host) ([]int, []modelsBeego.Result) {
-	var sizeRowSpan []int
+func hostsToResults(hosts []modelsDatabases.Host) []modelsBeego.Result {
 	var results []modelsBeego.Result
 
 	// Loop to create the table with a port per line
 	for _, host := range hosts {
 		var result modelsBeego.Result
+		var domainsOfTheHost []string
+
 		result.Address = host.Address
 		for _, domain := range host.Domain {
-			result.Domain = append(result.Domain, domain.Domain)
+			domainsOfTheHost = append(domainsOfTheHost, domain.Domain)
 		}
 		for _, port := range host.Ports {
 
-			// Get max number of the three element
-			if len(result.Domain) > len(host.Ports) && len(result.Domain) > len(port.PortComment) {
-				sizeRowSpan = append(sizeRowSpan, len(host.Domain))
-			} else if len(host.Ports) > len(result.Domain) && len(host.Ports) > len(port.PortComment) {
-				sizeRowSpan = append(sizeRowSpan, len(host.Ports))
-			} else {
-				sizeRowSpan = append(sizeRowSpan, len(port.PortComment))
-			}
 			if len(port.PortComment) > 0 {
 				for _, portComment := range port.PortComment {
 					result.Port = port.Port
 					result.Task = portComment.Task
+					result.Comment = portComment.Comment
+					if portComment.DomainID != 0 {
+						result.Domain = []string{portComment.Domain.Domain}
+					} else {
+						result.Domain = domainsOfTheHost
+					}
 					results = append(results, result)
 				}
 			} else {
@@ -203,5 +198,5 @@ func hostsToResults(hosts []modelsDatabases.Host) ([]int, []modelsBeego.Result) 
 		}
 
 	}
-	return sizeRowSpan, results
+	return results
 }

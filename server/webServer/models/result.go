@@ -6,4 +6,5 @@ type Result struct {
 	NbPorts int
 	Port    int
 	Task    string
+	Comment string
 }

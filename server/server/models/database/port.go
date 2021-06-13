@@ -31,6 +31,7 @@ type PortComment struct {
 	CommandOutput string
 	PortID        uint `gorm:"uniqueindex:idx_portcomment;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`           //`gorm:"type:bigint unsigned;"`
 	DomainID      uint `gorm:"default:0;uniqueindex:idx_portcomment;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` //`gorm:"type:bigint unsigned;"`
+	Domain        Domain
 	Comment       string
 	//Port    Port `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
