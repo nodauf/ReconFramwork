@@ -15,7 +15,7 @@ func RunCmd(taskName, cmd string) (string, string, string, string, error) {
 	var stdout bytes.Buffer
 	command.Stdout = &stdout
 	command.Stderr = &stderr
-	err := command.Run()
+	command.Run()
 	//out, err := command.CombinedOutput()
 
 	fmt.Println(stdout.String())
@@ -25,6 +25,6 @@ func RunCmd(taskName, cmd string) (string, string, string, string, error) {
 	//var t parsers.Parser
 	//reflect.ValueOf(t).MethodByName("ParseNmap").Call(nil)
 	//test.Parse(string(out))
-	return taskName, cmd, stdout.String(), stderr.String(), err
+	return taskName, cmd, stdout.String(), stderr.String(), nil
 	//return "", "", err
 }
