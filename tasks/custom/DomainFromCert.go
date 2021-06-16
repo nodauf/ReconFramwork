@@ -19,7 +19,7 @@ func DomainFromCert(taskName, cmd string) ([]byte, error) {
 		InsecureSkipVerify: true,
 	})
 	if err != nil {
-		output.Error = err
+		output.Error = err.Error()
 		outputBytes, _ := json.Marshal(output)
 		return outputBytes, nil
 	}

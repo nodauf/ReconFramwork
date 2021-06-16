@@ -38,14 +38,21 @@ func (c *ReconController) ListJobs() {
 }
 
 func (c *ReconController) DetailsJob() {
+	modaloutput := make(map[string]string)
 	id64, err := strconv.ParseUint(c.Ctx.Input.Param(":id"), 10, 32)
 	id := uint(id64)
 	if id != 0 && err == nil {
 		var output models.Output
 		job := db.GetJob(id)
 		json.Unmarshal(job.RawOutput, &output)
-		c.Data["Content"] = output.Stdout
+		modaloutput["Stdout"] = output.Stdout
+		modaloutput["Stderr"] = output.Stderr
+		if output.Error != "" {
+			modaloutput["Error"] = output.Error
+		}
+		c.Data["Html"] = false
+		c.Data["Content"] = modaloutput
 
 	}
-	c.TplName = "recon/includes/modal-content.tpl"
+	c.TplName = "recon/includes/modalTabs-content.tpl"
 }

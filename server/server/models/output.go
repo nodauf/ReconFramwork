@@ -5,5 +5,5 @@ type Output struct {
 	Cmd      string
 	Stdout   string
 	Stderr   string
-	Error    error
+	Error    string
 }

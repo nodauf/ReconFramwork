@@ -1,6 +1,8 @@
 package orchestrator
 
 import (
+	"errors"
+
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/config"
 	"github.com/nodauf/ReconFramwork/server/server/db"
@@ -66,7 +68,9 @@ func (options Options) RunTask() {
 			log.DEBUG.Println(targetType)
 			//log.DEBUG.Println(config.Config.Command)
 			log.DEBUG.Println(targetServiceDB)
-			log.ERROR.Println("Impossible to execute the task " + options.Task + ". The host " + options.Target + " has not the service targeted or the task does not exist")
+			errorTask := errors.New("Impossible to execute the task " + options.Task + ". The host " + options.Target + " has not the service targeted or the task does not exist")
+			log.ERROR.Println(errorTask.Error())
+			db.AddJobWithError(options.Target, "", options.Task, "", errorTask)
 		}
 
 	}

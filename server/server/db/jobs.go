@@ -1,13 +1,17 @@
 package db
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"reflect"
 
+	"github.com/RichardKnop/machinery/v1/log"
+	"github.com/nodauf/ReconFramwork/server/server/models"
 	modelsDatabases "github.com/nodauf/ReconFramwork/server/server/models/database"
 )
 
-func AddJob(target, parser, machineryTask, MachineryTaskArgs string) (modelsDatabases.Job, error) {
+func AddJob(target, parser, machineryTask, machineryTaskArgs string) (modelsDatabases.Job, error) {
 	var err error
 	host := GetHost(target)
 	domain := GetDomain(target)
@@ -16,7 +20,7 @@ func AddJob(target, parser, machineryTask, MachineryTaskArgs string) (modelsData
 	job.Processed = false
 	job.Parser = parser
 	job.MachineryTask = machineryTask
-	job.MachineryTaskArgs = MachineryTaskArgs
+	job.MachineryTaskArgs = machineryTaskArgs
 	// When we do a lot of select with go routing we need to use transaction to lock the table
 	tx := db.Begin()
 
@@ -34,6 +38,20 @@ func AddJob(target, parser, machineryTask, MachineryTaskArgs string) (modelsData
 	}
 	tx.Commit()
 	return job, err
+}
+
+func AddJobWithError(target, parser, machineryTask, machineryTaskArgs string, err error) {
+	job, errJob := AddJob(target, parser, machineryTask, machineryTaskArgs)
+	if errJob == nil {
+		result := models.Output{Error: err.Error()}
+		resultBytes, errf := json.Marshal(result)
+
+		fmt.Println(errf)
+		db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Updates(modelsDatabases.Job{RawOutput: resultBytes})
+	} else {
+		log.ERROR.Println(err)
+	}
+
 }
 
 func UpdateJob(job *modelsDatabases.Job, taskUUID string) {

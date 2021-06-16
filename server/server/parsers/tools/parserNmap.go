@@ -69,7 +69,7 @@ func (parse Parser) ParseNmap(outputBytes []byte) bool {
 
 	//fmt.Println("stdout: " + stdout)
 	//fmt.Println("stderr: " + stderr)
-	if output.Stderr != "" || output.Error != nil {
+	if output.Stderr != "" || output.Error != "" {
 		return false
 	}
 	return true
