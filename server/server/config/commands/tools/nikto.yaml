@@ -14,7 +14,7 @@ service:
    http-proxy: 
       variable:
          protocol: http
-   ssl/https: 
+   https: 
       variable:
          protocol: https
    # or
