@@ -12,9 +12,10 @@ type NucleiFinding struct {
 		Severity string `json:"severity"`
 		Tags     string `json:"tags"`
 	} `json:"info"`
-	IP         string `json:"ip"`
-	Matched    string `json:"matched"`
-	TemplateID string `json:"templateID"`
-	Timestamp  string `json:"timestamp"`
-	Type       string `json:"type"`
+	IP          string `json:"ip"`
+	Matched     string `json:"matched"`
+	TemplateID  string `json:"templateID"`
+	Timestamp   string `json:"timestamp"`
+	MatcherName string `json:"matcher_name"`
+	Type        string `json:"type"`
 }
