@@ -29,7 +29,9 @@ func RunCmd(taskName, cmd string) ([]byte, error) {
 	output.Cmd = cmd
 	output.Stdout = stdout.String()
 	output.Stderr = stderr.String()
-	output.Error = err.Error()
+	if err != nil {
+		output.Error = err.Error()
+	}
 	//test := reflect.ValueOf("ParserNmap").Interface().(parsers.ParserNmap)
 	//var t parsers.Parser
 	//reflect.ValueOf(t).MethodByName("ParseNmap").Call(nil)
