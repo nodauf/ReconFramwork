@@ -59,7 +59,11 @@ func UpdateJob(job *modelsDatabases.Job, taskUUID string) {
 }
 
 func ValidateJob(job *modelsDatabases.Job, resultOutput []reflect.Value) {
-	db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Updates(modelsDatabases.Job{Processed: true, RawOutput: resultOutput[0].Bytes()})
+	if len(resultOutput) > 0 {
+		db.Model(&modelsDatabases.Job{}).Where("id = ?", job.ID).Updates(modelsDatabases.Job{Processed: true, RawOutput: resultOutput[0].Bytes()})
+	} else {
+		log.ERROR.Println("result seems completly empty")
+	}
 }
 
 func GetNonProcessedTasks() []modelsDatabases.Job {
