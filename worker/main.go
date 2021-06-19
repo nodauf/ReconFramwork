@@ -12,7 +12,7 @@ func main() {
 		log.ERROR.Fatalln(err)
 	}
 
-	worker := server.NewWorker("machinery_worker", 10)
+	worker := server.NewWorker("machinery_worker", 2)
 	if err := worker.Launch(); err != nil {
 		log.ERROR.Fatalln(err)
 	}
