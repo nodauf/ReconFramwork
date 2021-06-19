@@ -51,7 +51,7 @@ func (parse Parser) PrintOutputNikto(data string) (string, bool) {
 
 	json.Unmarshal([]byte(data), &nikto)
 	for _, finding := range nikto.Vulnerabilities {
-		output += "+ " + finding.OSVDB + ": " + finding.URL + ": " + finding.Msg + "\n"
+		output += "+ OSVDB: " + finding.OSVDB + " - Path: " + finding.URL + " - Msg: " + finding.Msg + "\n"
 	}
 	return output, html
 }
