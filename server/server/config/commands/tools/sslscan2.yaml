@@ -1,0 +1,14 @@
+name: sslscan
+description: sslscan tests SSL/TLS enabled services to discover supported cipher suites
+tags:
+   - https
+target: service
+
+service:
+   https: 
+      variable:
+
+cmd: sslscan2 <target>:<port>
+
+parserFunction: ParseSslscan
+printFunction: PrintOutputSslscan
