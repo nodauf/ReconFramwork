@@ -26,6 +26,9 @@
           <table id="tableHosts" class="table table-hover table-striped  ">
             <thead>
               <tr>
+                <th style="width: 10%">
+                  Execution date
+                </th>
                 <th style="width: 15%">
                   Target
                 </th>
@@ -34,9 +37,6 @@
                 </th>
                 <th style="width: 30%">
                   Machinery Arguments
-                </th>
-                <th style="width: 20%">
-                  Execution date
                 </th>
                 <th style="width: 5%">
                 Processed
@@ -50,6 +50,9 @@
               {{ range $result := .Results}}
               <tr>
                 <td>
+                  {{ $result.ExecutionTime }}
+                </td>
+                <td>
                   {{ $result.Target }}
                 </td>
                 <td>
@@ -57,9 +60,6 @@
                 </td>
                 <td>
                   {{ $result.MachineryArgs }}
-                </td>
-                <td>
-                  {{ $result.ExecutionTime }}
                 </td>
                 <td>
                   {{ if $result.Processed }}
