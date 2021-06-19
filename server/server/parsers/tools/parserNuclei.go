@@ -29,6 +29,7 @@ func (parse Parser) ParseNuclei(outputBytes []byte) bool {
 		port, _ := strconv.Atoi(strings.Split(nuclei.Findings[0].Host, ":")[2])
 		if targetObject := db.GetTarget(target); targetObject != nil {
 			comment := stats(nuclei)
+			comment += "<br />\n" + getInterestingTech(nuclei)
 			commandOutput, _ := json.Marshal(nuclei)
 			portComment := modelsDatabases.PortComment{Task: output.TaskName, CommandOutput: string(commandOutput), Comment: comment}
 			err := db.AddPortComment(targetObject, port, portComment)
@@ -92,6 +93,21 @@ func stats(findings modelsParsers.Nuclei) string {
 			criticalNb++
 		}
 	}
-	comment = "Findings severity: " + strconv.Itoa(infoNb) + " info, " + strconv.Itoa(lowNb) + " low, " + strconv.Itoa(mediumNb) + " medium, " + strconv.Itoa(highNb) + " high, " + strconv.Itoa(criticalNb) + " critical."
+	comment = "Findings severity: <span style='color:cyan'>" + strconv.Itoa(infoNb) + " info</span>, <span style='color:mediumseagreen'>" + strconv.Itoa(lowNb) + " low</span>, <span style='color:yellow'>" + strconv.Itoa(mediumNb) + " medium</span>, <span style='color:orange'>" + strconv.Itoa(highNb) + " high</span>, <span style='color:red'>" + strconv.Itoa(criticalNb) + " critical</span>."
+	return comment
+}
+
+func getInterestingTech(findings modelsParsers.Nuclei) string {
+	var comment string
+
+	for _, finding := range findings.Findings {
+		// Two awesome templates to detect A LOT of technologies
+		if finding.TemplateID == "tech-detect" {
+			comment += finding.MatcherName
+		} else if finding.TemplateID == "favicon-detection" {
+			comment += finding.MatcherName + "<br />\n"
+		}
+	}
+
 	return comment
 }
