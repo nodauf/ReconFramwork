@@ -2,6 +2,7 @@ package orchestrator
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/RichardKnop/machinery/v1/log"
 	"github.com/nodauf/ReconFramwork/server/server/config"
@@ -54,10 +55,17 @@ func (options Options) RunTask() {
 			//} else if targetServiceDB := db.HostHasService(target, config.Config.Command[task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
 		} else if targetServiceDB := targetObject.HasService(config.Config.Command[options.Task].Service); targetServiceConfig && len(targetServiceDB) > 0 {
 			parser := config.Config.Command[options.Task].ParserFunction
+			// If there is multiple services to run the task we parallelize
+			var wgForServices sync.WaitGroup
 			for service, targetAndPort := range targetServiceDB {
-				cmd, machineryTask := preProcessingTemplate(config.Config.Command[options.Task], targetAndPort, service)
-				executeCommands(options.Server, options.Target, cmd, parser, options.Task, machineryTask)
+				wgForServices.Add(1)
+				go func(service, targetAndPort string) {
+					defer wgForServices.Done()
+					cmd, machineryTask := preProcessingTemplate(config.Config.Command[options.Task], targetAndPort, service)
+					executeCommands(options.Server, options.Target, cmd, parser, options.Task, machineryTask)
+				}(service, targetAndPort)
 			}
+			wgForServices.Wait()
 			// If the template target the domain, for exemple subdomain enumeration
 		} else if _, ok := utils.StringInSlice("domain", targetType); ok {
 			parser := config.Config.Command[options.Task].ParserFunction
@@ -70,7 +78,7 @@ func (options Options) RunTask() {
 			log.DEBUG.Println(targetServiceDB)
 			errorTask := errors.New("Impossible to execute the task " + options.Task + ". The host " + options.Target + " has not the service targeted or the task does not exist")
 			log.ERROR.Println(errorTask.Error())
-			db.AddJobWithError(options.Target, "", options.Task, "", errorTask)
+			db.AddJobWithError(options.Target, "", "", options.Task, errorTask)
 		}
 
 	}
