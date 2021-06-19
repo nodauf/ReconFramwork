@@ -79,7 +79,6 @@ func getTemplateFiles(filePath string) error {
 func loadTemplateCommands(filePath string) error {
 	var command = &modelsConfig.Command{}
 	//command.Parser = reflect.ValueOf("parsers.ParseSmbMap").Interface().(models.Parser)
-	command.Name = "test"
 	log.INFO.Println("Loading template " + filePath)
 	f, err := os.Open(filePath)
 	if err != nil {
