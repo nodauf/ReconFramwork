@@ -63,7 +63,7 @@ func executeCommands(server *machinery.Server, host, cmd, parser, taskName, mach
 		log.ERROR.Println(err)
 		return
 	}
-
+	log.DEBUG.Println("Send " + taskName + " and " + cmd + " to worker")
 	res, err := server.SendTask(&task0)
 	if err != nil {
 		log.ERROR.Fatalln(err.Error())
