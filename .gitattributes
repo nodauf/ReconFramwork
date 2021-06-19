@@ -1,0 +1,3 @@
+*.js linguist-detectable=false
+*.css linguist-detectable=false
+*.tpl linguist-detectable=false
