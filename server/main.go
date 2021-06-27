@@ -54,7 +54,6 @@ func main() {
 		options.Task = task
 		options.Workflow = workflow
 		go options.RunTask()
-		//go options.ConsumeEndedTasks(server, &wg)
 		//go options.RunWorkflow(&wg, server, workflow, target)
 
 		wg.Wait()*/
@@ -62,6 +61,8 @@ func main() {
 
 	optionsOrchestrator := orchestrator.NewOptions()
 
+	optionsOrchestrator.Wg.Add(1)
+	go optionsOrchestrator.ConsumeEndedTasks()
 	optionsOrchestrator.Wg.Add(1)
 	go prompt.Prompt(optionsOrchestrator)
 	//wg.Add(1)
