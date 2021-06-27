@@ -2,7 +2,6 @@ package orchestrator
 
 import (
 	"reflect"
-	"sync"
 	"time"
 
 	"github.com/RichardKnop/machinery/v1"
@@ -13,12 +12,12 @@ import (
 	parsersTools "github.com/nodauf/ReconFramwork/server/server/parsers/tools"
 )
 
-func ConsumeEndedTasks(server *machinery.Server, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (options Options) ConsumeEndedTasks() {
+	defer options.Wg.Done()
 	jobs := db.GetNonProcessedTasks()
 
 	for _, job := range jobs {
-		results, _ := server.GetBackend().GetState(job.TaskUUID)
+		results, _ := options.Server.GetBackend().GetState(job.TaskUUID)
 		if results.IsSuccess() {
 			reflectResults, _ := tasks.ReflectTaskResults(results.Results)
 
