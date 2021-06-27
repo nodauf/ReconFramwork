@@ -11,11 +11,16 @@ func GetHost(address string) modelsDatabases.Host {
 	var host modelsDatabases.Host
 	// When we do a lot of select with go routing we need to use transaction to lock the table
 	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 	result := tx.Where("address = ?", address).Preload("Ports").Preload("Ports.PortComment").Preload("Domain").First(&host)
+	tx.Commit()
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Host{}
 	}
-	tx.Commit()
 	return host
 }
 

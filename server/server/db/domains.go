@@ -12,8 +12,13 @@ func GetDomain(domainStr string) modelsDatabases.Domain {
 	var domain modelsDatabases.Domain
 	// When we do a lot of select with go routing we need to use transaction to lock the table
 	tx := db.Begin()
-
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 	result := tx.Where("domain = ?", domainStr).Preload("Host").Preload("Host.Ports").First(&domain)
+	tx.Commit()
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return modelsDatabases.Domain{}
 	}

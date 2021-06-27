@@ -23,7 +23,11 @@ func AddJob(target, parser, machineryTask, machineryTaskArgs string) (modelsData
 	job.MachineryTaskArgs = machineryTaskArgs
 	// When we do a lot of select with go routing we need to use transaction to lock the table
 	tx := db.Begin()
-
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
 	if host.ID != 0 {
 		job.Host = host
 		tx.Create(&job)
